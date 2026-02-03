@@ -1,0 +1,2125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRUDEV II MSME Support Portal</title>
+    <meta name="description" content="Business Growth Expert reporting and MSME management portal for PRUDEV II">
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gizblue: {
+                            50: '#e1f0f7',
+                            100: '#b4d9eb',
+                            200: '#82bede',
+                            300: '#4da1d0',
+                            400: '#238ac5',
+                            500: '#00609b',
+                            600: '#00588f',
+                            700: '#004d7e',
+                            800: '#00436d',
+                            900: '#003153',
+                        },
+                        gizgreen: {
+                            50: '#f1f8e6',
+                            100: '#dcefc2',
+                            200: '#c5e499',
+                            300: '#add970',
+                            400: '#99cf4f',
+                            500: '#62a127',
+                            600: '#589123',
+                            700: '#4c7d1e',
+                            800: '#406a19',
+                            900: '#2e4c12',
+                        },
+                        gopared: {
+                            50: '#fce6e7',
+                            100: '#f8c2c4',
+                            200: '#f4999d',
+                            300: '#f07075',
+                            400: '#ec4d53',
+                            500: '#e30613',
+                            600: '#d10511',
+                            700: '#ba050f',
+                            800: '#a3040d',
+                            900: '#8a030b',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
+        rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .font-serif {
+            font-family: 'Playfair Display', serif;
+        }
+
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+
+            body {
+                background: white !important;
+            }
+
+            .print-area {
+                border: none !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+                width: 100% !important;
+                margin: 0 !important;
+            }
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            75% {
+                transform: translateX(5px);
+            }
+        }
+
+        .animate-shake {
+            animation: shake 0.2s ease-in-out 0s 2;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-slate-50 to-gizblue-50 min-h-screen">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useMemo } = React;
+
+        // SVG Icon Components
+        const Shield = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>;
+        const Lock = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>;
+        const Users = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>;
+        const FileText = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" /><polyline points="10 9 9 9 8 9" /></svg>;
+        const Printer = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 6 2 18 2 18 9" /><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" /><rect x="6" y="14" width="12" height="8" /></svg>;
+        const Trash2 = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /><line x1="10" y1="11" x2="10" y2="17" /><line x1="14" y1="11" x2="14" y2="17" /></svg>;
+        const ChevronRight = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>;
+        const AlertCircle = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg>;
+        const Database = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3" /><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" /><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" /></svg>;
+        const LinkIcon = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg>;
+        const Plus = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>;
+        const Edit = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>;
+        const Building = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="2" width="16" height="20" rx="2" ry="2" /><path d="M9 22v-4h6v4" /><path d="M8 6h.01" /><path d="M16 6h.01" /><path d="M12 6h.01" /><path d="M12 10h.01" /><path d="M12 14h.01" /><path d="M16 10h.01" /><path d="M16 14h.01" /><path d="M8 10h.01" /><path d="M8 14h.01" /></svg>;
+        const Layout = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2" /><line x1="3" y1="9" x2="21" y2="9" /><line x1="9" y1="21" x2="9" y2="9" /></svg>;
+        const PieChart = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83" /><path d="M22 12A10 10 0 0 0 12 2v10z" /></svg>;
+        const BarChart = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10" /><line x1="12" y1="20" x2="12" y2="4" /><line x1="6" y1="20" x2="6" y2="14" /></svg>;
+        const Trophy = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22h10c0-1.76-.85-3.25-2.03-3.79-.5-.23-.97-.66-.97-1.21v-2.34c0-2.58 4-3.66 4-6.66V4H6v4c0 3 4 4.08 4 6.66z" /></svg>;
+        const Search = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>;
+        const Save = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" /><polyline points="17 21 17 13 7 13 7 21" /><polyline points="7 3 7 8 15 8" /></svg>;
+        const ChevronDown = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>;
+        const Briefcase = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2" /><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" /></svg>;
+        const Star = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>;
+        const MapPin = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>;
+        const MapIcon = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg>;
+        const LogOut = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" /></svg>;
+
+        const ADMIN_PASSCODE = "2026";
+
+        const SEED_BGES = [];
+        const SEED_MSMES = [];
+        const SEED_ASSIGNMENTS = [];
+
+        // LocalStorage helpers
+        const storage = {
+            get: (key, defaultValue = []) => {
+                try {
+                    const item = localStorage.getItem(key);
+                    if (!item || item === 'null') return defaultValue;
+                    const parsed = JSON.parse(item);
+                    return Array.isArray(parsed) ? parsed : defaultValue;
+                } catch {
+                    return defaultValue;
+                }
+            },
+            set: (key, value) => {
+                try {
+                    localStorage.setItem(key, JSON.stringify(value));
+                } catch (e) {
+                    console.error('Storage error:', e);
+                }
+            }
+        };
+
+        // Helper components (moved to top for hoisting stability)
+        const StatCard = ({ label, value, icon: Icon, color }) => {
+            const colors = {
+                blue: 'bg-gizblue-50 text-gizblue-600',
+                green: 'bg-gizgreen-50 text-gizgreen-600',
+                red: 'bg-gopared-50 text-gopared-600',
+                gizblue: 'bg-gizblue-600 text-white'
+            };
+            return (
+                <div className={`${color === 'gizblue' ? colors.gizblue : 'bg-white'} p-6 rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1`}>
+                    <div className="flex items-center justify-between mb-4">
+                        <div className={`p-3 rounded-2xl ${color === 'gizblue' ? 'bg-white/20' : (colors[color] || colors.blue)}`}>
+                            <Icon className="w-6 h-6" />
+                        </div>
+                    </div>
+                    <div className="text-3xl font-black mb-1">{value}</div>
+                    <div className={`text-xs font-bold uppercase tracking-wider ${color === 'gizblue' ? 'text-gizblue-100' : 'text-gray-400'}`}>{label}</div>
+                </div>
+            );
+        };
+
+        const ExternalLink = ({ href, label, icon: Icon }) => (
+            <a
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-between p-4 bg-white rounded-2xl border border-gray-100 hover:border-gizblue-300 hover:shadow-md transition-all group"
+            >
+                <div className="flex items-center space-x-3">
+                    <div className="p-2 bg-gray-50 rounded-lg group-hover:bg-gizblue-50 group-hover:text-gizblue-600 transition-colors">
+                        <Icon className="w-5 h-5" />
+                    </div>
+                    <span className="text-sm font-semibold text-gray-700">{label}</span>
+                </div>
+                <LinkIcon className="w-4 h-4 text-gray-300 group-hover:text-gizblue-600" />
+            </a>
+        );
+
+        const CSVImportButton = ({ onImport, type }) => (
+            <div className="relative group">
+                <input
+                    type="file"
+                    accept=".csv"
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                    onChange={(e) => {
+                        const file = e.target.files[0];
+                        if (file) {
+                            const reader = new FileReader();
+                            reader.onload = (event) => {
+                                try {
+                                    const text = event.target.result;
+                                    const lines = text.split(/\r?\n/).filter(line => line.trim());
+                                    if (lines.length < 2) {
+                                        alert('The CSV file appears to be empty or missing data rows.');
+                                        return;
+                                    }
+
+                                    const rawHeaders = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+                                    const normalize = (str) => str.toLowerCase().replace(/[\s_-]/g, '');
+
+                                    const data = lines.slice(1).map(line => {
+                                        const values = [];
+                                        let cur = '';
+                                        let inQuotes = false;
+                                        for (let i = 0; i < line.length; i++) {
+                                            const char = line[i];
+                                            if (char === '"') inQuotes = !inQuotes;
+                                            else if (char === ',' && !inQuotes) {
+                                                values.push(cur.trim().replace(/^"|"$/g, ''));
+                                                cur = '';
+                                            } else cur += char;
+                                        }
+                                        values.push(cur.trim().replace(/^"|"$/g, ''));
+
+                                        const obj = {};
+                                        rawHeaders.forEach((header, i) => {
+                                            const key = normalize(header);
+                                            obj[key] = values[i] || '';
+                                            obj[header] = values[i] || '';
+                                        });
+                                        return obj;
+                                    });
+
+                                    onImport(data);
+                                    e.target.value = '';
+                                } catch (err) {
+                                    console.error('Import error:', err);
+                                    alert('Failed to parse CSV. Please ensure it is a valid comma-separated file.');
+                                }
+                            };
+                            reader.readAsText(file);
+                        }
+                    }}
+                />
+                <button className="flex items-center space-x-2 bg-gizblue-600 text-white px-6 py-3 rounded-2xl font-bold hover:bg-gizblue-700 transition-all shadow-lg shadow-gizblue-100">
+                    <Database className="w-4 h-4" />
+                    <span>Import {type} CSV</span>
+                </button>
+            </div>
+        );
+
+        const CSVExportButton = ({ data, filename, type }) => {
+            const handleExport = () => {
+                if (!data || data.length === 0) {
+                    alert('No data available to export.');
+                    return;
+                }
+
+                const headers = Object.keys(data[0]);
+                const csvRows = [];
+                csvRows.push(headers.join(','));
+
+                for (const row of data) {
+                    const values = headers.map(header => {
+                        const val = row[header] === null || row[header] === undefined ? '' : row[header];
+                        const escaped = ('' + val).replace(/"/g, '""');
+                        return `"${escaped}"`;
+                    });
+                    csvRows.push(values.join(','));
+                }
+
+                const csvString = csvRows.join('\n');
+                const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.setAttribute('href', url);
+                link.setAttribute('download', `${filename}_${new Date().toISOString().split('T')[0]}.csv`);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            };
+
+            return (
+                <button
+                    onClick={handleExport}
+                    className="flex items-center space-x-2 bg-white border border-gray-200 text-gray-700 px-6 py-3 rounded-2xl font-bold hover:bg-gray-50 transition-all shadow-sm"
+                >
+                    <FileText className="w-4 h-4 text-gizblue-600" />
+                    <span>Export {type} CSV</span>
+                </button>
+            );
+        };
+        const SortButton = ({ label, active, direction, onClick }) => (
+            <button
+                onClick={(e) => {
+                    e.preventDefault();
+                    onClick();
+                }}
+                className={`flex items-center space-x-1 hover:text-gizblue-600 transition-colors uppercase tracking-wider ${active ? 'text-gizblue-600 font-bold' : ''}`}
+            >
+                <span>{label}</span>
+                <div className="flex flex-col">
+                    <ChevronDown className={`w-3 h-3 transition-transform duration-300 ${active && direction === 'asc' ? 'rotate-180' : 'opacity-30'}`} />
+                </div>
+            </button>
+        );
+
+
+        const SidebarItem = ({ id, activeTab, setActiveTab, label, icon: Icon }) => (
+            <button
+                onClick={() => setActiveTab(id)}
+                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all ${activeTab === id
+                    ? 'bg-gizblue-600 text-white shadow-lg'
+                    : 'text-gray-500 hover:bg-gizblue-50 hover:text-gizblue-600'
+                    }`}
+            >
+                <Icon className="w-5 h-5" />
+                <span className="font-medium">{label}</span>
+            </button>
+        );
+
+        const PairingForm = ({ bges, msmes, onPair }) => {
+            const [bge, setBge] = useState('');
+            const [msme, setMsme] = useState('');
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                if (bge && msme) {
+                    onPair(bge, msme);
+                    setBge('');
+                    setMsme('');
+                }
+            };
+
+            return (
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <div>
+                        <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Select Expert</label>
+                        <select
+                            value={bge}
+                            onChange={(e) => setBge(e.target.value)}
+                            className="w-full bg-gray-50 border-none rounded-2xl px-4 py-3 text-sm font-medium focus:ring-2 focus:ring-gizblue-500"
+                        >
+                            <option value="">-- Choose BGE --</option>
+                            {bges.map(b => <option key={b.id} value={b.id}>{b.name} ({b.code})</option>)}
+                        </select>
+                    </div>
+                    <div>
+                        <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Select Business</label>
+                        <select
+                            value={msme}
+                            onChange={(e) => setMsme(e.target.value)}
+                            className="w-full bg-gray-50 border-none rounded-2xl px-4 py-3 text-sm font-medium focus:ring-2 focus:ring-gizblue-500"
+                        >
+                            <option value="">-- Choose MSME --</option>
+                            {msmes.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
+                        </select>
+                    </div>
+                    <button
+                        type="submit"
+                        className="w-full bg-gizblue-600 text-white py-3 rounded-2xl font-bold shadow-lg shadow-gizblue-100 hover:bg-gizblue-700 transition-all active:scale-[0.98]"
+                    >
+                        Establish Assignment
+                    </button>
+                </form>
+            );
+        };
+
+        const App = () => {
+            const [view, setView] = useState('report');
+            const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(() => localStorage.getItem('prudev_admin_auth') === 'true');
+            const [passcode, setPasscode] = useState('');
+            const [loginError, setLoginError] = useState(false);
+            const [bges, setBges] = useState([]);
+            const [msmes, setMsmes] = useState([]);
+            const [assignments, setAssignments] = useState([]);
+            const [reports, setReports] = useState([]);
+            const [loading, setLoading] = useState(true);
+
+            const [formData, setFormData] = useState({
+                date: new Date().toISOString().split('T')[0],
+                location: '',
+                latitude: '',
+                longitude: '',
+                gpsCaptured: false,
+                businessName: '',
+                bgeName: '',
+                bgeCode: '',
+                objectives: '',
+                activities: '',
+                swot: '',
+                leadership: '',
+                gender: '',
+                waste: '',
+                climate: '',
+                bdsActions: '',
+            });
+
+            // Initialize data from localStorage
+            useEffect(() => {
+                const storedBges = storage.get('prudev_bges', SEED_BGES).map(b => ({
+                    ...b,
+                    name: b.name || 'Unnamed BGE',
+                    location: b.location || 'Unknown',
+                    code: b.code || 'BGE-?'
+                }));
+                const storedMsmes = storage.get('prudev_msmes', SEED_MSMES).map(m => ({
+                    ...m,
+                    name: m.name || 'Unnamed MSME',
+                    location: m.location || 'Unknown',
+                    cohort: m.cohort || '1'
+                }));
+                const storedAssignments = storage.get('prudev_assignments', []);
+                const storedReports = storage.get('prudev_reports', []);
+
+                setBges(storedBges);
+                setMsmes(storedMsmes);
+                setAssignments(storedAssignments);
+                setReports(storedReports);
+                setLoading(false);
+
+                // Check URL hash for BGE name
+                const hash = decodeURIComponent(window.location.hash.substring(1));
+                if (hash) {
+                    const found = storedBges.find(b => b.name === hash);
+                    if (found) {
+                        updateField('bgeName', found.name);
+                        updateField('bgeCode', found.code);
+                    }
+                }
+            }, []);
+
+            // Save to localStorage whenever data changes
+            useEffect(() => {
+                if (!loading) {
+                    storage.set('prudev_bges', bges);
+                    storage.set('prudev_msmes', msmes);
+                    storage.set('prudev_assignments', assignments);
+                    storage.set('prudev_reports', reports);
+                }
+            }, [bges, msmes, assignments, reports, loading]);
+
+            const updateField = (field, value) => {
+                setFormData(prev => ({ ...prev, [field]: value }));
+
+                // Auto-populate BGE code when name is selected
+                if (field === 'bgeName') {
+                    const bge = bges.find(b => b.name === value);
+                    if (bge) {
+                        setFormData(prev => ({ ...prev, bgeCode: bge.code }));
+                    }
+                }
+            };
+
+            const handleAdminLogin = (e) => {
+                e.preventDefault();
+                if (passcode === ADMIN_PASSCODE) {
+                    setIsAdminAuthenticated(true);
+                    localStorage.setItem('prudev_admin_auth', 'true');
+                    setLoginError(false);
+                    setView('admin');
+                } else {
+                    setLoginError(true);
+                    setTimeout(() => setLoginError(false), 500);
+                }
+            };
+
+            const handlePrint = () => {
+                window.print();
+            };
+
+            // BGE Management
+            const addBge = (bge) => {
+                const newBge = { ...bge, id: 'b' + Date.now() };
+                setBges(prev => [...prev, newBge]);
+            };
+
+            const deleteBge = (id) => {
+                if (confirm('Are you sure you want to delete this BGE?')) {
+                    setBges(prev => prev.filter(b => b.id !== id));
+                    setAssignments(prev => prev.filter(a => a.bgeId !== id));
+                }
+            };
+
+            // MSME Management
+            const addMsme = (msme) => {
+                const newMsme = { ...msme, id: 'm' + Date.now() };
+                setMsmes(prev => [...prev, newMsme]);
+            };
+
+            const deleteMsme = (id) => {
+                if (confirm('Are you sure you want to delete this MSME?')) {
+                    setMsmes(prev => prev.filter(m => m.id !== id));
+                    setAssignments(prev => prev.filter(a => a.msmeId !== id));
+                }
+            };
+
+            const clearAllMsmes = () => {
+                if (confirm('CAUTION: This will delete ALL MSMEs and their assignments. This cannot be undone. Proceed?')) {
+                    if (confirm('FINAL WARNING: Are you absolutely sure you want to erase all data?')) {
+                        setMsmes([]);
+                        setAssignments([]);
+                        alert('All MSME data has been cleared.');
+                    }
+                }
+            };
+
+            // Assignment Management
+            const addAssignment = (bgeId, msmeId) => {
+                const bge = bges.find(b => b.id === bgeId);
+                const msme = msmes.find(m => m.id === msmeId);
+                if (bge && msme) {
+                    const newAssignment = {
+                        id: 'a' + Date.now(),
+                        bgeId,
+                        msmeId,
+                        bgeName: bge.name,
+                        msmeName: msme.name,
+                        date: new Date().toISOString().split('T')[0]
+                    };
+                    setAssignments(prev => [...prev, newAssignment]);
+                }
+            };
+
+            const deleteAssignment = (id) => {
+                if (confirm('Are you sure you want to delete this assignment?')) {
+                    setAssignments(prev => prev.filter(a => a.id !== id));
+                }
+            };
+
+            const getBgeAssignments = (bgeId) => assignments.filter(a => a.bgeId === bgeId);
+
+            // Report Management
+            const addReport = (reportData) => {
+                const newReport = {
+                    ...reportData,
+                    id: 'r' + Date.now(),
+                    timestamp: new Date().toISOString()
+                };
+                setReports(prev => [...prev, newReport]);
+                alert('Report saved successfully to archive!');
+            };
+
+            if (loading) {
+                return (
+                    <div className="min-h-screen flex items-center justify-center">
+                        <div className="text-center">
+                            <Database className="w-16 h-16 mx-auto mb-4 text-gizblue-600 animate-pulse" />
+                            <p className="text-gray-600">Loading...</p>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="min-h-screen">
+                    {/* Navigation */}
+                    <nav className="no-print bg-white shadow-sm border-b border-gray-200">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div className="flex justify-between items-center h-16">
+                                <div className="flex items-center space-x-3">
+                                    <Shield className="w-8 h-8 text-gizblue-600" />
+                                    <div>
+                                        <h1 className="text-xl font-bold text-gray-900">PRUDEV II</h1>
+                                        <p className="text-xs text-gray-500">MSME Support Portal</p>
+                                    </div>
+                                </div>
+                                <div className="flex space-x-2">
+                                    <button
+                                        onClick={() => setView('report')}
+                                        className={`px-4 py-2 rounded-lg font-medium transition-all ${view === 'report'
+                                            ? 'bg-gizblue-600 text-white shadow-md'
+                                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                            }`}
+                                    >
+                                        <FileText className="w-4 h-4 inline mr-2" />
+                                        Report
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            if (!isAdminAuthenticated) {
+                                                setView('login');
+                                            } else {
+                                                setView('admin');
+                                            }
+                                        }}
+                                        className={`px-4 py-2 rounded-lg font-medium transition-all ${view === 'admin' || view === 'login'
+                                            ? 'bg-gizblue-600 text-white shadow-md'
+                                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                            }`}
+                                    >
+                                        <Lock className="w-4 h-4 inline mr-2" />
+                                        Admin
+                                    </button>
+                                    {isAdminAuthenticated && (
+                                        <button
+                                            onClick={() => {
+                                                if (confirm('Are you sure you want to logout?')) {
+                                                    setIsAdminAuthenticated(false);
+                                                    localStorage.removeItem('prudev_admin_auth');
+                                                    setView('report');
+                                                }
+                                            }}
+                                            className="px-4 py-2 rounded-lg font-medium text-gray-400 hover:text-gopared-600 hover:bg-gopared-50 transition-all"
+                                        >
+                                            <LogOut className="w-4 h-4 inline mr-2" />
+                                            Logout
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </nav>
+
+                    {/* Main Content */}
+                    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                        {view === 'login' && !isAdminAuthenticated && (
+                            <AdminLogin
+                                passcode={passcode}
+                                setPasscode={setPasscode}
+                                handleLogin={handleAdminLogin}
+                                loginError={loginError}
+                            />
+                        )}
+
+                        {view === 'admin' && isAdminAuthenticated && (
+                            <AdminPanel
+                                bges={bges}
+                                setBges={setBges}
+                                msmes={msmes}
+                                setMsmes={setMsmes}
+                                assignments={assignments}
+                                setAssignments={setAssignments}
+                                reports={reports}
+                                setReports={setReports}
+                                addBge={addBge}
+                                deleteBge={deleteBge}
+                                addMsme={addMsme}
+                                deleteMsme={deleteMsme}
+                                clearAllMsmes={clearAllMsmes}
+                                addAssignment={addAssignment}
+                                deleteAssignment={deleteAssignment}
+                                getBgeAssignments={getBgeAssignments}
+                            />
+                        )}
+
+                        {view === 'report' && (
+                            <ReportForm
+                                formData={formData}
+                                updateField={updateField}
+                                handlePrint={handlePrint}
+                                addReport={addReport}
+                                bges={bges}
+                                msmes={msmes}
+                                assignments={assignments}
+                            />
+                        )}
+                    </main>
+                </div>
+            );
+        };
+
+        // Admin Login Component
+        const AdminLogin = ({ passcode, setPasscode, handleLogin, loginError }) => (
+            <div className="max-w-md mx-auto fade-in">
+                <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-200">
+                    <div className="text-center mb-8">
+                        <div className="inline-flex items-center justify-center w-16 h-16 bg-gizblue-100 rounded-full mb-4">
+                            <Lock className="w-8 h-8 text-gizblue-600" />
+                        </div>
+                        <h2 className="text-2xl font-bold text-gray-900">Admin Access</h2>
+                        <p className="text-gray-600 mt-2">Enter passcode to continue</p>
+                    </div>
+                    <form onSubmit={handleLogin} className="space-y-6">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Passcode
+                            </label>
+                            <input
+                                type="password"
+                                value={passcode}
+                                onChange={(e) => setPasscode(e.target.value)}
+                                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-gizblue-500 focus:border-transparent transition-all ${loginError ? 'border-gopared-500 animate-shake' : 'border-gray-300'
+                                    }`}
+                                placeholder="Enter passcode"
+                                autoFocus
+                            />
+                            {loginError && (
+                                <p className="mt-2 text-sm text-gopared-600 flex items-center">
+                                    <AlertCircle className="w-4 h-4 mr-1" />
+                                    Incorrect passcode
+                                </p>
+                            )}
+                        </div>
+                        <button
+                            type="submit"
+                            className="w-full bg-gizblue-600 text-white py-3 rounded-lg font-medium hover:bg-gizblue-700 transition-colors shadow-lg hover:shadow-xl"
+                        >
+                            Access Admin Panel
+                        </button>
+                    </form>
+                </div>
+            </div>
+        );
+
+        // Admin Panel Component
+        const AdminPanel = ({ bges, setBges, msmes, setMsmes, assignments, setAssignments, reports, setReports, addBge, deleteBge, addMsme, deleteMsme, clearAllMsmes, addAssignment, deleteAssignment, getBgeAssignments }) => {
+            const [activeTab, setActiveTab] = useState('dashboard');
+            const [selectedCohort, setSelectedCohort] = useState('1');
+            const [searchQuery, setSearchQuery] = useState('');
+            const [expandedBgeId, setExpandedBgeId] = useState(null);
+
+            // Sorting & Filtering State
+            const [bgeSort, setBgeSort] = useState({ key: 'name', dir: 'asc' });
+            const [msmeSort, setMsmeSort] = useState({ key: 'name', dir: 'asc' });
+            const [msmeLocationFilter, setMsmeLocationFilter] = useState('all');
+
+            // Selection for Matrix Export
+            const [selectedBgeIds, setSelectedBgeIds] = useState([]);
+
+            const toggleBgeSelection = (id) => {
+                setSelectedBgeIds(prev =>
+                    prev.includes(id) ? prev.filter(bId => bId !== id) : [...prev, id]
+                );
+            };
+
+            const selectAllBges = () => {
+                if (selectedBgeIds.length === bges.length) setSelectedBgeIds([]);
+                else setSelectedBgeIds(bges.map(b => b.id));
+            };
+
+            const handleSort = (type, key) => {
+                const current = type === 'bge' ? bgeSort : msmeSort;
+                const setSort = type === 'bge' ? setBgeSort : setMsmeSort;
+                const dir = current.key === key && current.dir === 'asc' ? 'desc' : 'asc';
+                setSort({ key, dir });
+            };
+
+            const sortData = (data, config) => {
+                return [...data].sort((a, b) => {
+                    const valA = (a[config.key] || '').toString().toLowerCase();
+                    const valB = (b[config.key] || '').toString().toLowerCase();
+                    if (valA < valB) return config.dir === 'asc' ? -1 : 1;
+                    if (valA > valB) return config.dir === 'asc' ? 1 : -1;
+                    return 0;
+                });
+            };
+
+            const stats = {
+                totalBges: bges.length,
+                totalMsmes: msmes.length,
+                cohort1: msmes.filter(m => m.cohort === '1').length,
+                cohort2: msmes.filter(m => m.cohort === '2').length,
+                totalAssignments: assignments.length
+            };
+
+            const filteredBges = useMemo(() => {
+                const query = searchQuery.toLowerCase();
+                const filtered = bges.filter(b => {
+                    return (
+                        (b.name || '').toLowerCase().includes(query) ||
+                        (b.code || '').toLowerCase().includes(query) ||
+                        ((b.specialisation || '').toLowerCase().includes(query))
+                    );
+                });
+                return sortData(filtered, bgeSort);
+            }, [bges, searchQuery, bgeSort]);
+
+            const filteredMsmes = useMemo(() => {
+                const query = searchQuery.toLowerCase();
+                const filtered = msmes.filter(m => {
+                    const matchesCohort = m.cohort === selectedCohort;
+                    const matchesSearch = (m.name || '').toLowerCase().includes(query) ||
+                        (m.location || '').toLowerCase().includes(query) ||
+                        (m.district || '').toLowerCase().includes(query) ||
+                        (m.townCity || '').toLowerCase().includes(query);
+                    const matchesLocation = msmeLocationFilter === 'all' ||
+                        (m.district === msmeLocationFilter) ||
+                        (m.townCity === msmeLocationFilter);
+                    return matchesCohort && matchesSearch && matchesLocation;
+                });
+                return sortData(filtered, msmeSort);
+            }, [msmes, selectedCohort, searchQuery, msmeSort, msmeLocationFilter]);
+
+            const uniqueLocations = useMemo(() => {
+                const locations = new Set();
+                msmes.filter(m => m.cohort === selectedCohort).forEach(m => {
+                    if (m.district) locations.add(m.district);
+                    if (m.townCity) locations.add(m.townCity);
+                });
+                return Array.from(locations).sort();
+            }, [msmes, selectedCohort]);
+
+            return (
+                <div className="flex bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100 min-h-[800px] fade-in">
+                    {/* Sidebar */}
+                    <div className="w-64 bg-gray-50 border-r border-gray-100 p-6 flex flex-col">
+                        <div className="mb-10 px-4">
+                            <h2 className="text-sm font-bold text-gray-400 uppercase tracking-widest">Main Menu</h2>
+                        </div>
+                        <nav className="space-y-2 flex-1">
+                            <SidebarItem id="dashboard" activeTab={activeTab} setActiveTab={setActiveTab} label="Dashboard" icon={Layout} />
+                            <SidebarItem id="bges" activeTab={activeTab} setActiveTab={setActiveTab} label="BGE Network" icon={Users} />
+                            <SidebarItem id="msmes" activeTab={activeTab} setActiveTab={setActiveTab} label="MSME Directory" icon={Building} />
+                            <SidebarItem id="assignments" activeTab={activeTab} setActiveTab={setActiveTab} label="Assignments" icon={LinkIcon} />
+                            <SidebarItem id="leaderboard" activeTab={activeTab} setActiveTab={setActiveTab} label="Leaderboard" icon={Trophy} />
+                            <SidebarItem id="archive" activeTab={activeTab} setActiveTab={setActiveTab} label="Reports Archive" icon={FileText} />
+                            <SidebarItem id="analysis" activeTab={activeTab} setActiveTab={setActiveTab} label="Report Analysis" icon={BarChart} />
+                        </nav>
+
+                        <div className="mt-auto pt-6 border-t border-gray-200">
+                            <div className="bg-gizblue-50 p-4 rounded-2xl">
+                                <p className="text-xs text-gizblue-600 font-semibold mb-2">Help & Docs</p>
+                                <a href="DATA_IMPORT_GUIDE.md" className="text-sm text-gray-600 hover:text-gizblue-600 block">Import Guide</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Main Content Area */}
+                    <div className="flex-1 flex flex-col">
+                        {/* Header */}
+                        <div className="h-20 border-b border-gray-100 px-8 flex items-center justify-between bg-white">
+                            <h3 className="text-xl font-bold text-gray-800 capitalize">
+                                {activeTab === 'dashboard' ? 'Overview' : activeTab.replace(/([A-Z])/g, ' $1')}
+                            </h3>
+                            <div className="flex items-center space-x-4">
+                                <div className="relative">
+                                    <input
+                                        type="text"
+                                        placeholder="Search records..."
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        className="pl-10 pr-4 py-2 bg-gray-50 border-none rounded-full text-sm focus:ring-2 focus:ring-gizblue-500 w-64 transition-all"
+                                    />
+                                    <svg className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                                </div>
+                                <div className="w-8 h-8 rounded-full bg-gizblue-600 border-2 border-white shadow-sm flex items-center justify-center text-white text-xs font-bold">
+                                    A
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Content Scroll Area */}
+                        <div className="p-8 flex-1 overflow-y-auto">
+                            {activeTab === 'dashboard' && (
+                                <div className="space-y-8 animate-in fade-in duration-500">
+                                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                                        <StatCard label="Total BGEs" value={stats.totalBges} icon={Users} color="blue" />
+                                        <StatCard label="Cohort 1 MSMEs" value={stats.cohort1} icon={Building} color="green" />
+                                        <StatCard label="Cohort 2 MSMEs" value={stats.cohort2} icon={Building} color="red" />
+                                        <StatCard label="Total Projects" value={stats.totalAssignments} icon={Briefcase} color="gizblue" />
+                                    </div>
+
+                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                        <div className="bg-gray-50 p-6 rounded-3xl border border-gray-100">
+                                            <h4 className="font-bold text-gray-700 mb-4 flex items-center">
+                                                <LinkIcon className="w-4 h-4 mr-2" />
+                                                Quick Data Access
+                                            </h4>
+                                            <div className="space-y-3">
+                                                <ExternalLink
+                                                    href="https://gopagroup-my.sharepoint.com/:x:/g/personal/richard_obuku_gopa_eu/ESLj_mgxSklJg8BI6VzPQE8B1-0_FWM-YVqVzj0JbA2GYg?e=nefUL2&wdLOR=cC8605E43-6224-E545-BABF-022A5DCD269B"
+                                                    label="BGE Master List (SharePoint)"
+                                                    icon={Users}
+                                                />
+                                                <ExternalLink
+                                                    href="https://docs.google.com/spreadsheets/d/1SVO6vWr2Dn0CE02vxnlGO8daNiggCyI2/edit?gid=374779689"
+                                                    label="MSME Cohort 1 (Google Sheets)"
+                                                    icon={Building}
+                                                />
+                                                <ExternalLink
+                                                    href="https://docs.google.com/spreadsheets/d/1glDn1U8fwo-UJCo5akk4gD1d25F45klg/edit?gid=1212040973"
+                                                    label="MSME Cohort 2 (Google Sheets)"
+                                                    icon={Building}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="bg-gizblue-600 p-8 rounded-3xl text-white relative overflow-hidden group">
+                                            <Star className="absolute -right-4 -top-4 w-32 h-32 opacity-10 group-hover:scale-110 transition-transform" />
+                                            <h4 className="text-xl font-bold mb-2">Welcome Back!</h4>
+                                            <p className="text-gizblue-100 text-sm mb-6 leading-relaxed">
+                                                You have {stats.totalAssignments} active assignments across {stats.totalMsmes} MSMEs.
+                                                Need to update data? Use the CSV import features in the specific sections.
+                                            </p>
+                                            <button
+                                                onClick={() => setActiveTab('assignments')}
+                                                className="bg-white text-gizblue-600 px-6 py-2 rounded-full text-sm font-bold hover:bg-gizblue-50 transition-colors"
+                                            >
+                                                Manage Assignments
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {activeTab === 'bges' && (
+                                <div className="space-y-6">
+                                    <div className="flex items-center justify-between mb-6">
+                                        <p className="text-gray-500 text-sm">Upload BGE list with Name, Location, Code, and optional Specialisation.</p>
+                                        <div className="flex space-x-3">
+                                            <CSVExportButton
+                                                data={bges.map(({ id, ...rest }) => rest)}
+                                                filename="bge_network"
+                                                type="BGE"
+                                            />
+                                            <CSVImportButton
+                                                onImport={(data) => {
+                                                    const imported = data.map((item, i) => {
+                                                        const name = item.name || item.bgename || item.fullname || item.expertname || item.Name || item.BGE_Name || item['BGE Name'];
+                                                        const location = item.location || item.city || item.region || item.Location || item.Region || item.District;
+                                                        const code = item.code || item.bgecode || item.expertid || item.Code || item.BGE_Code || item.ID;
+                                                        const specialisation = item.specialisation || item.specialization || item.skills || item.areaofspecialisation || item.areaofspecialization || item.Specialisation || item.Specialization || '';
+
+                                                        return {
+                                                            id: 'b' + Date.now() + i,
+                                                            name: name || 'Unnamed BGE',
+                                                            location: location || 'Unknown',
+                                                            code: code || ('BGE-' + i),
+                                                            specialisation
+                                                        };
+                                                    }).filter(b => b.name && b.name !== 'Unnamed BGE');
+
+                                                    if (imported.length > 0) {
+                                                        setBges(prev => [...prev, ...imported]);
+                                                        alert(`Success! Imported ${imported.length} BGEs into the network.`);
+                                                    } else {
+                                                        alert('No matching data found. Please ensure your CSV has headings like Name, Location, and Code.');
+                                                    }
+                                                }}
+                                                type="BGE"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-x-auto">
+                                        <table className="w-full text-left border-collapse">
+                                            <thead>
+                                                <tr className="bg-gray-50 text-gray-500 text-[10px] uppercase tracking-widest border-b border-gray-100">
+                                                    <th className="px-6 py-4 font-bold w-1/3">
+                                                        <SortButton
+                                                            label="BGE Name"
+                                                            active={bgeSort.key === 'name'}
+                                                            direction={bgeSort.dir}
+                                                            onClick={() => handleSort('bge', 'name')}
+                                                        />
+                                                    </th>
+                                                    <th className="px-6 py-4 font-bold w-1/4">
+                                                        <SortButton
+                                                            label="Location"
+                                                            active={bgeSort.key === 'location'}
+                                                            direction={bgeSort.dir}
+                                                            onClick={() => handleSort('bge', 'location')}
+                                                        />
+                                                    </th>
+                                                    <th className="px-6 py-4 font-bold w-1/6">
+                                                        <SortButton
+                                                            label="Code"
+                                                            active={bgeSort.key === 'code'}
+                                                            direction={bgeSort.dir}
+                                                            onClick={() => handleSort('bge', 'code')}
+                                                        />
+                                                    </th>
+                                                    <th className="px-6 py-4 font-bold uppercase tracking-widest">Specialisation</th>
+                                                    <th className="px-6 py-4 font-bold text-right w-[80px] uppercase tracking-widest">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-gray-50">
+                                                {filteredBges.map(bge => (
+                                                    <tr key={bge.id} className="hover:bg-gizblue-50/30 transition-colors group">
+                                                        <td className="px-6 py-4">
+                                                            <div className="font-bold text-gray-900">{bge.name}</div>
+                                                        </td>
+                                                        <td className="px-6 py-4 text-sm text-gray-600">{bge.location}</td>
+                                                        <td className="px-6 py-4 text-sm font-mono text-gizblue-600">{bge.code}</td>
+                                                        <td className="px-6 py-4 text-sm text-gray-500 italic">{bge.specialisation || '-'}</td>
+                                                        <td className="px-6 py-4 text-right">
+                                                            <button onClick={() => deleteBge(bge.id)} className="text-red-400 hover:text-gopared-600 opacity-0 group-hover:opacity-100 transition-all p-2 bg-gopared-50 rounded-lg">
+                                                                <Trash2 className="w-4 h-4" />
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                                {filteredBges.length === 0 && (
+                                                    <tr>
+                                                        <td colSpan="5" className="px-6 py-12 text-center text-gray-400">No BGEs found. Upload a CSV to get started.</td>
+                                                    </tr>
+                                                )}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            )}
+
+                            {activeTab === 'msmes' && (
+                                <div className="space-y-6">
+                                    <div className="flex items-center justify-between mb-6">
+                                        <div className="flex items-center space-x-4">
+                                            <div className="flex bg-gray-100 p-1 rounded-xl">
+                                                <button
+                                                    onClick={() => setSelectedCohort('1')}
+                                                    className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${selectedCohort === '1' ? 'bg-white shadow text-gizblue-600' : 'text-gray-500 hover:text-gray-700'}`}
+                                                >
+                                                    Cohort 1
+                                                </button>
+                                                <button
+                                                    onClick={() => setSelectedCohort('2')}
+                                                    className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${selectedCohort === '2' ? 'bg-white shadow text-gizblue-600' : 'text-gray-500 hover:text-gray-700'}`}
+                                                >
+                                                    Cohort 2
+                                                </button>
+                                            </div>
+                                            <div className="relative">
+                                                <select
+                                                    value={msmeLocationFilter}
+                                                    onChange={(e) => setMsmeLocationFilter(e.target.value)}
+                                                    className="bg-gray-50 border-none rounded-xl text-xs font-bold text-gray-600 px-4 py-3 focus:ring-2 focus:ring-gizblue-500 appearance-none pr-10"
+                                                >
+                                                    <option value="all">All Locations</option>
+                                                    {uniqueLocations.map(loc => (
+                                                        <option key={loc} value={loc}>{loc}</option>
+                                                    ))}
+                                                </select>
+                                                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
+                                                    <ChevronDown className="h-4 w-4" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="flex space-x-3">
+                                            <CSVExportButton
+                                                data={msmes.filter(m => m.cohort === selectedCohort).map(m => ({
+                                                    'Business name': m.name,
+                                                    'district': m.district,
+                                                    'town/city': m.townCity,
+                                                    'business physical location': m.location,
+                                                    'name of key contact person': m.contactPerson,
+                                                    'business role': m.businessRole,
+                                                    'Mobile phone numbers (of contact person)': m.mobile,
+                                                    'Email Address of contact person': m.contactEmail,
+                                                    'Business Email Address': m.businessEmail,
+                                                    'Name of the main founder': m.founderName,
+                                                    'sex of founder': m.founderSex
+                                                }))}
+                                                filename={`msme_cohort_${selectedCohort}`}
+                                                type={`Cohort ${selectedCohort}`}
+                                            />
+                                            <CSVImportButton
+                                                onImport={(data) => {
+                                                    const imported = [];
+                                                    const duplicates = [];
+
+                                                    data.forEach((item, i) => {
+                                                        const name = item['Business name'] || item.name || item.businessname || item.msmename || item.companyname || item.Name || item.Business_Name || item.MSME_Name || item['MSME Name'];
+                                                        const district = item.district || item.District || '';
+                                                        const townCity = item['town/city'] || item.town || item.city || item.Town || item.City || '';
+                                                        const location = item['business physical location'] || item.location || item.address || item.Location || item.Physical_Location || '';
+                                                        const contactPerson = item['name of key contact person'] || item.contact || item.contactperson || item.Contact || '';
+                                                        const businessRole = item['business role'] || item.role || item.Role || '';
+                                                        const mobile = item['Mobile phone numbers (of contact person)'] || item.mobile || item.phone || item.Mobile || item.Phone || '';
+                                                        const contactEmail = item['Email Address of contact person'] || item.email || item.Email || '';
+                                                        const businessEmail = item['Business Email Address'] || item.businessemail || '';
+                                                        const founderName = item['Name of the main founder'] || item.founder || '';
+                                                        const founderSex = item['sex of founder'] || item.sex || item.gender || '';
+
+                                                        if (!name) return;
+
+                                                        // Duplicate check: Check by name AND mobile
+                                                        const isDuplicateInState = msmes.some(m =>
+                                                            m.name.toLowerCase() === name.toLowerCase() &&
+                                                            (mobile ? m.mobile === mobile : true)
+                                                        );
+
+                                                        const isDuplicateInBatch = imported.some(m =>
+                                                            m.name.toLowerCase() === name.toLowerCase() &&
+                                                            (mobile ? m.mobile === mobile : true)
+                                                        );
+
+                                                        if (!isDuplicateInState && !isDuplicateInBatch) {
+                                                            imported.push({
+                                                                id: 'm' + Date.now() + i,
+                                                                name,
+                                                                district,
+                                                                townCity,
+                                                                location,
+                                                                contactPerson,
+                                                                businessRole,
+                                                                mobile,
+                                                                contactEmail,
+                                                                businessEmail,
+                                                                founderName,
+                                                                founderSex,
+                                                                cohort: selectedCohort
+                                                            });
+                                                        } else {
+                                                            duplicates.push(name);
+                                                        }
+                                                    });
+
+                                                    if (imported.length > 0) {
+                                                        setMsmes(prev => [...prev, ...imported]);
+                                                        let msg = `Success! Imported ${imported.length} MSMEs into Cohort ${selectedCohort}.`;
+                                                        if (duplicates.length > 0) {
+                                                            msg += `\n\nSkipped ${duplicates.length} duplicates.`;
+                                                        }
+                                                        alert(msg);
+                                                    } else if (duplicates.length > 0) {
+                                                        alert(`All ${duplicates.length} records in this batch already exist.`);
+                                                    } else {
+                                                        alert('No matching data found. Please ensure your CSV headers match the required fields.');
+                                                    }
+                                                }}
+                                                type={`MSME Cohort ${selectedCohort}`}
+                                            />
+                                            <div className="border-l border-gray-200 h-10 mx-2"></div>
+                                            <button
+                                                onClick={clearAllMsmes}
+                                                className="flex items-center space-x-2 text-gray-400 hover:text-red-500 px-3 py-2 rounded-xl text-xs font-bold transition-all"
+                                                title="CAUTION: Erase all MSME data"
+                                            >
+                                                <Trash2 className="w-3.5 h-3.5" />
+                                                <span>Clear Directory</span>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-x-auto">
+                                        <table className="w-full text-left border-collapse">
+                                            <thead>
+                                                <tr className="bg-gray-50 text-gray-500 text-[10px] uppercase tracking-widest border-b border-gray-100">
+                                                    <th className="px-6 py-4 font-bold w-1/3">
+                                                        <SortButton
+                                                            label="Business Name"
+                                                            active={msmeSort.key === 'name'}
+                                                            direction={msmeSort.dir}
+                                                            onClick={() => handleSort('msme', 'name')}
+                                                        />
+                                                    </th>
+                                                    <th className="px-6 py-4 font-bold w-1/4">
+                                                        <SortButton
+                                                            label="Location"
+                                                            active={msmeSort.key === 'location'}
+                                                            direction={msmeSort.dir}
+                                                            onClick={() => handleSort('msme', 'location')}
+                                                        />
+                                                    </th>
+                                                    <th className="px-6 py-4 font-bold w-1/4 uppercase tracking-widest">Contact & Role</th>
+                                                    <th className="px-6 py-4 font-bold text-right w-[80px] uppercase tracking-widest">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-gray-50">
+                                                {filteredMsmes.map(msme => (
+                                                    <tr key={msme.id} className="hover:bg-gizblue-50/30 transition-colors group">
+                                                        <td className="px-6 py-4">
+                                                            <div className="font-bold text-gray-900">{msme.name}</div>
+                                                            <div className="text-xs text-gray-500">{msme.mobile || msme.businessEmail}</div>
+                                                        </td>
+                                                        <td className="px-6 py-4">
+                                                            <div className="text-sm text-gray-600">{msme.location || (msme.townCity ? `${msme.townCity}, ${msme.district}` : 'Unknown')}</div>
+                                                        </td>
+                                                        <td className="px-6 py-4 text-sm text-gray-500">
+                                                            {msme.contactPerson || '-'}
+                                                            <div className="text-xs italic">{msme.businessRole}</div>
+                                                        </td>
+                                                        <td className="px-6 py-4 text-right">
+                                                            <button onClick={() => deleteMsme(msme.id)} className="text-red-400 hover:text-gopared-600 opacity-0 group-hover:opacity-100 transition-all p-2 bg-gopared-50 rounded-lg">
+                                                                <Trash2 className="w-4 h-4" />
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                                {filteredMsmes.length === 0 && (
+                                                    <tr>
+                                                        <td colSpan="4" className="px-6 py-12 text-center text-gray-400">No MSMEs found in Cohort {selectedCohort}.</td>
+                                                    </tr>
+                                                )}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            )}
+
+                            {activeTab === 'assignments' && (
+                                <div className="space-y-6">
+                                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                                        <div className="lg:col-span-1 border-r border-gray-100 pr-8">
+                                            <h4 className="font-bold text-gray-800 mb-4">Create New Pairing</h4>
+                                            <PairingForm
+                                                bges={bges}
+                                                msmes={msmes}
+                                                onPair={addAssignment}
+                                            />
+                                        </div>
+                                        <div className="lg:col-span-2">
+                                            <div className="flex items-center justify-between mb-4">
+                                                <div className="flex items-center space-x-3">
+                                                    <h4 className="font-bold text-gray-800">Assignments by Expert ({bges.length})</h4>
+                                                    <button
+                                                        onClick={selectAllBges}
+                                                        className="text-[10px] font-bold uppercase tracking-widest text-gizblue-600 bg-gizblue-50 px-2 py-1 rounded-md hover:bg-gizblue-100 transition-colors"
+                                                    >
+                                                        {selectedBgeIds.length === bges.length ? 'Deselect All' : 'Select All'}
+                                                    </button>
+                                                </div>
+                                                <button
+                                                    onClick={() => {
+                                                        if (selectedBgeIds.length === 0) {
+                                                            alert('Please select at least one BGE to export the matrix.');
+                                                            return;
+                                                        }
+                                                        window.print();
+                                                    }}
+                                                    className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-sm font-bold transition-all shadow-md active:scale-95 ${selectedBgeIds.length > 0
+                                                        ? 'bg-gizblue-600 text-white hover:bg-gizblue-700'
+                                                        : 'bg-gray-100 text-gray-400 cursor-not-allowed shadow-none'
+                                                        }`}
+                                                >
+                                                    <Printer className="w-4 h-4" />
+                                                    <span>Export {selectedBgeIds.length > 0 ? `(${selectedBgeIds.length}) ` : ''}Matrix</span>
+                                                </button>
+                                            </div>
+                                            <div className="space-y-4">
+                                                {bges.map(bge => {
+                                                    const bgeAssignments = assignments.filter(a => a.bgeId === bge.id);
+                                                    const isExpanded = expandedBgeId === bge.id;
+
+                                                    return (
+                                                        <div key={bge.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden transition-all hover:border-gizblue-200">
+                                                            <div className="flex items-center p-4 hover:bg-gray-50/50 transition-colors">
+                                                                <div className="flex items-center pr-4">
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        checked={selectedBgeIds.includes(bge.id)}
+                                                                        onChange={(e) => {
+                                                                            e.stopPropagation();
+                                                                            toggleBgeSelection(bge.id);
+                                                                        }}
+                                                                        className="w-4 h-4 text-gizblue-600 border-gray-300 rounded focus:ring-gizblue-500 cursor-pointer"
+                                                                    />
+                                                                </div>
+                                                                <button
+                                                                    onClick={() => setExpandedBgeId(isExpanded ? null : bge.id)}
+                                                                    className="flex-1 flex items-center justify-between"
+                                                                >
+                                                                    <div className="flex items-center space-x-4">
+                                                                        <div className="p-2 bg-gizblue-50 rounded-xl">
+                                                                            <Users className="w-5 h-5 text-gizblue-600" />
+                                                                        </div>
+                                                                        <div className="text-left">
+                                                                            <p className="font-bold text-gray-900">{bge.name}</p>
+                                                                            <p className="text-xs text-gray-500">{bge.code} • {bgeAssignments.length} Assignments</p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className={`transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>
+                                                                        <ChevronDown className="w-5 h-5 text-gray-400" />
+                                                                    </div>
+                                                                </button>
+                                                            </div>
+
+                                                            {isExpanded && (
+                                                                <div className="p-4 bg-gray-50 border-t border-gray-50 space-y-2 animate-in slide-in-from-top-2 duration-300">
+                                                                    {bgeAssignments.length > 0 ? (
+                                                                        bgeAssignments.map(a => (
+                                                                            <div key={a.id} className="bg-white p-3 rounded-xl border border-gray-100 shadow-sm flex items-center justify-between group">
+                                                                                <div className="flex items-center space-x-3">
+                                                                                    <div className="p-1.5 bg-gizgreen-50 rounded-lg">
+                                                                                        <Building className="w-4 h-4 text-gizgreen-600" />
+                                                                                    </div>
+                                                                                    <span className="text-sm font-medium text-gray-700">{a.msmeName}</span>
+                                                                                </div>
+                                                                                <button onClick={() => deleteAssignment(a.id)} className="text-red-400 hover:text-gopared-600 p-1.5 opacity-0 group-hover:opacity-100 transition-all bg-gopared-50 rounded-lg">
+                                                                                    <Trash2 className="w-4 h-4" />
+                                                                                </button>
+                                                                            </div>
+                                                                        ))
+                                                                    ) : (
+                                                                        <div className="py-8 text-center text-gray-400 text-sm">
+                                                                            No assignments for this expert yet.
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    );
+                                                })}
+                                                {bges.length === 0 && (
+                                                    <div className="p-12 text-center text-gray-400 border-2 border-dashed border-gray-100 rounded-3xl">
+                                                        No BGEs available. Upload a BGE list first.
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {activeTab === 'leaderboard' && (
+                                <div className="space-y-6">
+                                    <div className="flex justify-end mb-4">
+                                        <CSVExportButton
+                                            data={bges.map(bge => ({
+                                                Name: bge.name,
+                                                Code: bge.code,
+                                                Specialisation: bge.specialisation,
+                                                ReportsCount: reports.filter(r => r.bgeName === bge.name).length
+                                            })).sort((a, b) => b.ReportsCount - a.ReportsCount)}
+                                            filename="bge_leaderboard"
+                                            type="Leaderboard"
+                                        />
+                                    </div>
+                                    <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
+                                        <table className="w-full text-left">
+                                            <thead>
+                                                <tr className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider">
+                                                    <th className="px-6 py-4 font-semibold">Rank</th>
+                                                    <th className="px-6 py-4 font-semibold">BGE Name</th>
+                                                    <th className="px-6 py-4 font-semibold">Specialisation</th>
+                                                    <th className="px-6 py-4 font-semibold text-center">MSMEs Assigned</th>
+                                                    <th className="px-6 py-4 font-semibold text-center">Reports Completed</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-gray-50">
+                                                {bges.map(bge => ({
+                                                    ...bge,
+                                                    msmeCount: [...new Set(assignments.filter(a => a.bgeId === bge.id).map(a => a.msmeId))].length,
+                                                    reportCount: reports.filter(r => r.bgeName === bge.name).length
+                                                }))
+                                                    .sort((a, b) => b.reportCount - a.reportCount)
+                                                    .map((bge, index) => (
+                                                        <tr key={bge.id} className="hover:bg-gizblue-50/30 transition-colors">
+                                                            <td className="px-6 py-4">
+                                                                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${index === 0 ? 'bg-gizblue-100 text-gizblue-700' :
+                                                                    index === 1 ? 'bg-gray-100 text-gray-700' :
+                                                                        index === 2 ? 'bg-orange-100 text-orange-700' : 'bg-gray-50 text-gray-500'
+                                                                    }`}>
+                                                                    {index + 1}
+                                                                </div>
+                                                            </td>
+                                                            <td className="px-6 py-4">
+                                                                <div className="font-bold text-gray-900">{bge.name}</div>
+                                                                <div className="text-xs text-gray-500">{bge.code}</div>
+                                                            </td>
+                                                            <td className="px-6 py-4 text-sm text-gray-600">{bge.specialisation || '-'}</td>
+                                                            <td className="px-6 py-4 text-center">
+                                                                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-gizgreen-50 text-gizgreen-600">
+                                                                    {bge.msmeCount}
+                                                                </span>
+                                                            </td>
+                                                            <td className="px-6 py-4 text-center">
+                                                                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-gizblue-50 text-gizblue-600">
+                                                                    {bge.reportCount}
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            )}
+
+                            {activeTab === 'archive' && (
+                                <div className="space-y-6">
+                                    <div className="flex justify-end mb-4">
+                                        <CSVExportButton
+                                            data={reports.map(({ id, ...rest }) => rest)}
+                                            filename="visit_reports_archive"
+                                            type="Reports"
+                                        />
+                                    </div>
+                                    <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
+                                        <table className="w-full text-left">
+                                            <thead>
+                                                <tr className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider">
+                                                    <th className="px-6 py-4 font-semibold">Date</th>
+                                                    <th className="px-6 py-4 font-semibold">BGE</th>
+                                                    <th className="px-6 py-4 font-semibold">MSME</th>
+                                                    <th className="px-6 py-4 font-semibold text-right">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-gray-50">
+                                                {reports.map((report, index) => (
+                                                    <tr key={report.id || index} className="hover:bg-gizblue-50/30 transition-colors">
+                                                        <td className="px-6 py-4 text-sm text-gray-600">{report.date}</td>
+                                                        <td className="px-6 py-4">
+                                                            <div className="font-bold text-gray-900 text-sm">{report.bgeName}</div>
+                                                        </td>
+                                                        <td className="px-6 py-4">
+                                                            <div className="flex items-center space-x-2">
+                                                                <span className="text-sm text-gray-700 font-medium">{report.businessName}</span>
+                                                                {report.gpsCaptured && (
+                                                                    <div title={`Verified: ${report.latitude}, ${report.longitude}`} className="p-1 bg-gizblue-50 text-gizblue-600 rounded-md">
+                                                                        <MapPin className="w-3 h-3" />
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-6 py-4 text-right">
+                                                            <div className="flex justify-end space-x-2">
+                                                                <button onClick={() => {
+                                                                    alert('Detailed report view logic can be expanded here.');
+                                                                }} className="p-2 text-gizblue-600 bg-gizblue-50 rounded-lg">
+                                                                    <FileText className="w-4 h-4" />
+                                                                </button>
+                                                                <button onClick={() => {
+                                                                    if (confirm('Delete this report?')) {
+                                                                        setReports(prev => prev.filter((_, i) => i !== index));
+                                                                    }
+                                                                }} className="p-2 text-red-400 bg-gopared-50 rounded-lg">
+                                                                    <Trash2 className="w-4 h-4" />
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                                {reports.length === 0 && (
+                                                    <tr>
+                                                        <td colSpan="4" className="px-6 py-12 text-center text-gray-400 font-medium lowercase">
+                                                            No reports archived yet. Use the Visit Report form to save your first report.
+                                                        </td>
+                                                    </tr>
+                                                )}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            )}
+
+                            {activeTab === 'analysis' && (
+                                <div className="space-y-8 animate-in fade-in duration-500">
+                                    {/* Overview Stats */}
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                        <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
+                                            <h5 className="text-xs font-bold text-gray-400 uppercase mb-4">MSME Cohort Distribution</h5>
+                                            <div className="flex items-center justify-between">
+                                                <div>
+                                                    <p className="text-2xl font-black text-gizblue-600">{stats.cohort1}</p>
+                                                    <p className="text-xs text-gray-500">Cohort 1</p>
+                                                </div>
+                                                <div className="h-10 w-px bg-gray-100"></div>
+                                                <div>
+                                                    <p className="text-2xl font-black text-gizgreen-600">{stats.cohort2}</p>
+                                                    <p className="text-xs text-gray-500">Cohort 2</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
+                                            <h5 className="text-xs font-bold text-gray-400 uppercase mb-4">BGE Coverage</h5>
+                                            <p className="text-2xl font-black text-gray-900">{[...new Set(bges.map(b => b.location))].length}</p>
+                                            <p className="text-xs text-gray-500">Unique Locations</p>
+                                        </div>
+                                        <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
+                                            <h5 className="text-xs font-bold text-gray-400 uppercase mb-4">Expert Skills</h5>
+                                            <p className="text-2xl font-black text-gray-900">{[...new Set(bges.map(b => b.specialisation).filter(Boolean))].length}</p>
+                                            <p className="text-xs text-gray-500">Specialisations</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                        {/* Visits by BGE */}
+                                        <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm">
+                                            <h4 className="font-bold text-gray-800 mb-6 flex items-center">
+                                                <Trophy className="w-5 h-5 mr-3 text-gizblue-500" />
+                                                Most Productive Experts
+                                            </h4>
+                                            <div className="space-y-4">
+                                                {bges.map(bge => ({
+                                                    name: bge.name,
+                                                    count: reports.filter(r => r.bgeName === bge.name).length
+                                                }))
+                                                    .sort((a, b) => b.count - a.count)
+                                                    .slice(0, 5)
+                                                    .map((item, idx) => (
+                                                        <div key={item.name}>
+                                                            <div className="flex justify-between text-sm mb-1">
+                                                                <span className="font-bold text-gray-700">{item.name}</span>
+                                                                <span className="text-gray-500 font-medium">{item.count} visits</span>
+                                                            </div>
+                                                            <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+                                                                <div
+                                                                    className={`h-2 rounded-full transition-all duration-1000 ${idx === 0 ? 'bg-gizblue-600' : 'bg-gizblue-400'}`}
+                                                                    style={{ width: `${(item.count / (Math.max(...bges.map(b => reports.filter(r => r.bgeName === b.name).length), 1))) * 100}%` }}
+                                                                ></div>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                {reports.length === 0 && <p className="text-center text-gray-400 py-4 text-sm font-medium italic lowercase">No visit data available yet.</p>}
+                                            </div>
+                                        </div>
+
+                                        {/* BGE Location Distribution */}
+                                        <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm">
+                                            <h4 className="font-bold text-gray-800 mb-6 flex items-center">
+                                                <Building className="w-5 h-5 mr-3 text-gizblue-600" />
+                                                BGE Network by Location
+                                            </h4>
+                                            <div className="grid grid-cols-2 gap-4">
+                                                {Object.entries(
+                                                    bges.reduce((acc, b) => {
+                                                        const loc = b.location || 'Unknown';
+                                                        acc[loc] = (acc[loc] || 0) + 1;
+                                                        return acc;
+                                                    }, {})
+                                                ).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([loc, count]) => (
+                                                    <div key={loc} className="p-3 bg-gray-50 rounded-2xl border border-gray-100">
+                                                        <p className="text-xs font-bold text-gray-400 uppercase truncate" title={loc}>{loc}</p>
+                                                        <p className="text-xl font-black text-gray-900">{count}</p>
+                                                    </div>
+                                                ))}
+                                                {bges.length === 0 && <p className="col-span-2 text-center text-gray-400 py-4 text-sm italic lowercase">No BGE data available.</p>}
+                                            </div>
+                                        </div>
+
+                                        {/* Specialisation Breakdown */}
+                                        <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm">
+                                            <h4 className="font-bold text-gray-800 mb-6 flex items-center">
+                                                <Briefcase className="w-5 h-5 mr-3 text-gizgreen-600" />
+                                                Specialisation Summary
+                                            </h4>
+                                            <div className="space-y-3">
+                                                {Object.entries(
+                                                    bges.reduce((acc, b) => {
+                                                        if (b.specialisation) acc[b.specialisation] = (acc[b.specialisation] || 0) + 1;
+                                                        return acc;
+                                                    }, {})
+                                                ).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([spec, count]) => (
+                                                    <div key={spec} className="flex items-center justify-between text-sm">
+                                                        <span className="text-gray-600 font-medium truncate pr-4">{spec}</span>
+                                                        <span className="px-2 py-1 bg-gizgreen-50 text-gizgreen-600 rounded-lg font-bold min-w-[2rem] text-center">{count}</span>
+                                                    </div>
+                                                ))}
+                                                {bges.filter(b => b.specialisation).length === 0 && (
+                                                    <p className="text-center text-gray-400 italic text-sm py-8 lowercase">No specialisations documented yet.</p>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {/* SWOT & System Insights */}
+                                        <div className="bg-gizblue-600 p-8 rounded-3xl text-white relative overflow-hidden group">
+                                            <Star className="absolute -right-4 -top-4 w-32 h-32 opacity-10 group-hover:scale-110 transition-transform duration-500" />
+                                            <h4 className="font-bold mb-6 flex items-center">
+                                                <Layout className="w-5 h-5 mr-3" />
+                                                System Integration
+                                            </h4>
+                                            <p className="text-sm text-gizblue-100 leading-relaxed mb-6">
+                                                The MSME Support Portal is managing <strong>{reports.length}</strong> archived reports across <strong>{bges.length}</strong> active experts. These data insights are used to optimize Work Package II outcomes.
+                                            </p>
+                                            <div className="bg-white/10 p-6 rounded-2xl border border-white/20">
+                                                <div className="text-xs font-bold uppercase tracking-widest text-gizblue-200 mb-2">Most Recent Activity</div>
+                                                {reports.length > 0 ? (
+                                                    <p className="text-sm font-medium">"{reports[reports.length - 1].bgeName} submitted a visit report for {reports[reports.length - 1].businessName}"</p>
+                                                ) : (
+                                                    <p className="text-sm opacity-50 italic lowercase">Waiting for the first report submission...</p>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Deployment Matrix Print View (Hidden on Screen) */}
+                        <div className="hidden print:block p-10 bg-white min-h-screen">
+                            <div className="max-w-4xl mx-auto">
+                                {/* Header (Same as ReportForm) */}
+                                <div className="mb-10 pb-8 border-b-2 border-gizblue">
+                                    <div className="grid grid-cols-3 gap-4 items-center mb-8">
+                                        <div className="flex justify-start">
+                                            <img src="assets/giz_logo.png" alt="GIZ" className="h-16" />
+                                        </div>
+                                        <div className="text-center">
+                                            <h1 className="text-3xl font-bold text-gray-900 font-serif leading-tight">PRUDEV II</h1>
+                                            <p className="text-sm font-semibold text-gray-600 tracking-[0.2em] mt-1 uppercase">MSME Support Programme</p>
+                                            <p className="text-xs font-bold text-gizblue mt-3 uppercase tracking-wider">Work package II: MSME Competitiveness</p>
+                                        </div>
+                                        <div className="flex justify-end">
+                                            <img src="assets/gopa_afc_logo.png" alt="GOPA AFC" className="h-14" />
+                                        </div>
+                                    </div>
+                                    <div className="text-center">
+                                        <div className="inline-block px-8 py-2 border-2 border-gizblue rounded-lg">
+                                            <h2 className="text-2xl font-black text-gizblue uppercase tracking-[0.3em]">Deployment Matrix</h2>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Matrix Content */}
+                                <div className="space-y-8">
+                                    {(selectedBgeIds.length > 0
+                                        ? bges.filter(b => selectedBgeIds.includes(b.id))
+                                        : bges
+                                    ).map((bge, idx) => {
+                                        const bgeAssignments = assignments.filter(a => a.bgeId === bge.id);
+                                        return (
+                                            <div key={bge.id} className="avoid-break shadow-sm border border-gray-100 rounded-2xl overflow-hidden">
+                                                <div className="bg-gray-50 px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+                                                    <div>
+                                                        <h3 className="text-lg font-bold text-gray-900">{idx + 1}. {bge.name}</h3>
+                                                        <p className="text-[10px] text-gizblue font-black uppercase tracking-widest">{bge.code} • {bge.specialisation || 'Generalist'}</p>
+                                                    </div>
+                                                    <div className="text-right">
+                                                        <p className="text-xl font-black text-gizblue-600">{bgeAssignments.length}</p>
+                                                        <p className="text-[8px] text-gray-500 uppercase font-black tracking-tighter">Assigned MSMEs</p>
+                                                    </div>
+                                                </div>
+                                                <div className="p-6">
+                                                    {bgeAssignments.length > 0 ? (
+                                                        <div className="grid grid-cols-1 gap-4">
+                                                            {bgeAssignments.map(a => {
+                                                                const msme = msmes.find(m => m.id === a.msmeId);
+                                                                return (
+                                                                    <div key={a.id} className="grid grid-cols-4 gap-4 p-4 bg-white rounded-xl border border-gray-100 items-center">
+                                                                        <div className="col-span-1">
+                                                                            <p className="text-xs font-black text-gray-900 leading-tight uppercase">{a.msmeName}</p>
+                                                                            <p className="text-[10px] text-gray-500 font-bold">Cohort {msme?.cohort || '?'}</p>
+                                                                        </div>
+                                                                        <div className="col-span-1">
+                                                                            <p className="text-[10px] text-gray-400 uppercase font-bold mb-0.5">Location</p>
+                                                                            <p className="text-[11px] font-bold text-gray-700">{msme?.townCity || msme?.location || 'N/A'}</p>
+                                                                            <p className="text-[9px] text-gray-500">{msme?.district || ''}</p>
+                                                                        </div>
+                                                                        <div className="col-span-1">
+                                                                            <p className="text-[10px] text-gray-400 uppercase font-bold mb-0.5">Contact</p>
+                                                                            <p className="text-[11px] font-bold text-gray-700">{msme?.contactPerson || 'N/A'}</p>
+                                                                            <p className="text-[9px] text-gizblue-600 font-bold">{msme?.mobile || 'No Phone'}</p>
+                                                                        </div>
+                                                                        <div className="col-span-1 text-right">
+                                                                            <p className="text-[10px] text-gray-400 uppercase font-bold mb-0.5">Role/Focus</p>
+                                                                            <p className="text-[11px] italic text-gray-600">{msme?.businessRole || 'General'}</p>
+                                                                        </div>
+                                                                    </div>
+                                                                );
+                                                            })}
+                                                        </div>
+                                                    ) : (
+                                                        <p className="text-sm italic text-gray-400 py-2">No MSMEs assigned to this expert.</p>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+
+                                {/* Footer */}
+                                <div className="mt-20 pt-8 border-t border-gray-200 flex justify-between items-center text-[10px] text-gray-500 uppercase font-bold tracking-widest leading-none">
+                                    <p>Official Deployment Matrix • PRUDEV II MSME Support Portal</p>
+                                    <p>Extracted: {new Date().toLocaleDateString()} {new Date().toLocaleTimeString()}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Report Form Component
+        const ReportForm = ({ formData, updateField, handlePrint, addReport, bges, msmes, assignments }) => {
+            const [isCapturing, setIsCapturing] = useState(false);
+
+            // Filter MSMEs based on current BGE selection
+            const assignedMsmes = useMemo(() => {
+                if (!formData.bgeName) return [];
+                const bge = bges.find(b => b.name === formData.bgeName);
+                if (!bge) return [];
+
+                const assignedIds = assignments
+                    .filter(a => a.bgeId === bge.id)
+                    .map(a => a.msmeId);
+
+                return msmes.filter(m => assignedIds.includes(m.id));
+            }, [formData.bgeName, bges, msmes, assignments]);
+
+            const captureLocation = () => {
+                setIsCapturing(true);
+                if (!navigator.geolocation) {
+                    alert("Geolocation is not supported by your browser");
+                    setIsCapturing(false);
+                    return;
+                }
+
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const { latitude, longitude } = position.coords;
+                        updateField('latitude', latitude.toFixed(6));
+                        updateField('longitude', longitude.toFixed(6));
+                        updateField('gpsCaptured', true);
+                        updateField('location', `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
+                        setIsCapturing(false);
+                    },
+                    (error) => {
+                        alert("Unable to retrieve your location: " + error.message);
+                        setIsCapturing(false);
+                    },
+                    { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+                );
+            };
+
+            return (
+                <div className="space-y-6">
+                    {/* Form Section */}
+                    <div className="no-print bg-white rounded-2xl shadow-xl p-8 border border-gray-200 fade-in">
+                        <div className="flex justify-between items-center mb-6">
+                            <h2 className="text-2xl font-bold text-gray-900">MSME Visit Report</h2>
+                            <div className="flex space-x-3">
+                                <button
+                                    onClick={() => addReport(formData)}
+                                    className="bg-gizgreen-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors shadow-lg hover:shadow-xl flex items-center space-x-2"
+                                >
+                                    <Save className="w-5 h-5" />
+                                    <span>Save Report</span>
+                                </button>
+                                <button
+                                    onClick={handlePrint}
+                                    className="bg-gizblue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-gizblue-700 transition-colors shadow-lg hover:shadow-xl flex items-center space-x-2"
+                                >
+                                    <Printer className="w-5 h-5" />
+                                    <span>Print Report</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
+                                <input
+                                    type="date"
+                                    value={formData.date}
+                                    onChange={(e) => updateField('date', e.target.value)}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gizblue-500 focus:border-transparent"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center justify-between">
+                                    <span>Proof of Presence (GPS)</span>
+                                    {formData.gpsCaptured && (
+                                        <span className="text-[10px] font-bold text-gizgreen-600 bg-gizgreen-50 px-2 py-0.5 rounded-full uppercase">Captured</span>
+                                    )}
+                                </label>
+                                <div className="relative group">
+                                    <input
+                                        type="text"
+                                        value={formData.location}
+                                        readOnly
+                                        className="w-full pl-4 pr-32 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-600 placeholder-gray-400"
+                                        placeholder="Capture coordinates..."
+                                    />
+                                    <button
+                                        onClick={captureLocation}
+                                        disabled={isCapturing}
+                                        className={`absolute right-1 top-1 bottom-1 px-4 rounded-md text-xs font-bold transition-all flex items-center space-x-2 ${formData.gpsCaptured
+                                            ? 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                                            : 'bg-gizblue-600 text-white hover:bg-gizblue-700 shadow-sm'
+                                            }`}
+                                    >
+                                        <MapPin className={`w-3.5 h-3.5 ${isCapturing ? 'animate-bounce' : ''}`} />
+                                        <span>{isCapturing ? 'Locating...' : formData.gpsCaptured ? 'Update GPS' : 'Capture GPS'}</span>
+                                    </button>
+                                </div>
+                                {formData.gpsCaptured && (
+                                    <div className="mt-2 flex space-x-3 text-[10px]">
+                                        <span className="text-gray-500 font-mono">LAT: {formData.latitude}</span>
+                                        <span className="text-gray-500 font-mono">LONG: {formData.longitude}</span>
+                                        <a
+                                            href={`https://www.google.com/maps?q=${formData.latitude},${formData.longitude}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-gizblue-600 hover:underline flex items-center font-bold"
+                                        >
+                                            <MapIcon className="w-2.5 h-2.5 mr-1" />
+                                            View on Map
+                                        </a>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">BGE Name</label>
+                                <select
+                                    value={formData.bgeName}
+                                    onChange={(e) => updateField('bgeName', e.target.value)}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gizblue-500 focus:border-transparent"
+                                >
+                                    <option value="">Select BGE</option>
+                                    {bges.map(bge => (
+                                        <option key={bge.id} value={bge.name}>{bge.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">BGE Code</label>
+                                <input
+                                    type="text"
+                                    value={formData.bgeCode}
+                                    onChange={(e) => updateField('bgeCode', e.target.value)}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gizblue-500 focus:border-transparent bg-gray-50"
+                                    placeholder="Auto-filled"
+                                    readOnly
+                                />
+                            </div>
+
+                            <div className="md:col-span-2">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Business Name</label>
+                                <select
+                                    value={formData.businessName}
+                                    onChange={(e) => updateField('businessName', e.target.value)}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gizblue-500 focus:border-transparent"
+                                    disabled={!formData.bgeName}
+                                >
+                                    {!formData.bgeName ? (
+                                        <option value="">Please select an Expert first</option>
+                                    ) : assignedMsmes.length > 0 ? (
+                                        <>
+                                            <option value="">Select assigned MSME</option>
+                                            {assignedMsmes.map(msme => (
+                                                <option key={msme.id} value={msme.name}>{msme.name}</option>
+                                            ))}
+                                        </>
+                                    ) : (
+                                        <option value="">No MSMEs assigned to this Expert</option>
+                                    )}
+                                </select>
+                                {formData.bgeName && assignedMsmes.length === 0 && (
+                                    <p className="mt-2 text-xs text-orange-600 bg-orange-50 p-2 rounded-lg flex items-center">
+                                        <AlertCircle className="w-3 h-3 mr-2" />
+                                        This Expert has no assigned businesses. Please contact Admin.
+                                    </p>
+                                )}
+                            </div>
+
+                            <div className="md:col-span-2">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Objectives of the Visit</label>
+                                <textarea
+                                    value={formData.objectives}
+                                    onChange={(e) => updateField('objectives', e.target.value)}
+                                    rows="3"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gizblue-500 focus:border-transparent"
+                                    placeholder="Describe the objectives..."
+                                />
+                            </div>
+
+                            <div className="md:col-span-2">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Activities Undertaken</label>
+                                <textarea
+                                    value={formData.activities}
+                                    onChange={(e) => updateField('activities', e.target.value)}
+                                    rows="3"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gizblue-500 focus:border-transparent"
+                                    placeholder="List activities..."
+                                />
+                            </div>
+
+                            <div className="md:col-span-2">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">SWOT Analysis</label>
+                                <textarea
+                                    value={formData.swot}
+                                    onChange={(e) => updateField('swot', e.target.value)}
+                                    rows="4"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gizblue-500 focus:border-transparent"
+                                    placeholder="Strengths, Weaknesses, Opportunities, Threats..."
+                                />
+                            </div>
+
+                            <div className="md:col-span-2">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Leadership & Governance</label>
+                                <textarea
+                                    value={formData.leadership}
+                                    onChange={(e) => updateField('leadership', e.target.value)}
+                                    rows="3"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gizblue-500 focus:border-transparent"
+                                    placeholder="Leadership observations..."
+                                />
+                            </div>
+
+                            <div className="md:col-span-2">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Gender Considerations</label>
+                                <textarea
+                                    value={formData.gender}
+                                    onChange={(e) => updateField('gender', e.target.value)}
+                                    rows="2"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gizblue-500 focus:border-transparent"
+                                    placeholder="Gender-related observations..."
+                                />
+                            </div>
+
+                            <div className="md:col-span-2">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Waste Management</label>
+                                <textarea
+                                    value={formData.waste}
+                                    onChange={(e) => updateField('waste', e.target.value)}
+                                    rows="2"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gizblue-500 focus:border-transparent"
+                                    placeholder="Waste management practices..."
+                                />
+                            </div>
+
+                            <div className="md:col-span-2">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Climate Change Adaptation</label>
+                                <textarea
+                                    value={formData.climate}
+                                    onChange={(e) => updateField('climate', e.target.value)}
+                                    rows="2"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gizblue-500 focus:border-transparent"
+                                    placeholder="Climate adaptation measures..."
+                                />
+                            </div>
+
+                            <div className="md:col-span-2">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">BDS Actions & Recommendations</label>
+                                <textarea
+                                    value={formData.bdsActions}
+                                    onChange={(e) => updateField('bdsActions', e.target.value)}
+                                    rows="4"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gizblue-500 focus:border-transparent"
+                                    placeholder="Recommended actions and next steps..."
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Print Preview */}
+                    <div className="print-area bg-white rounded-2xl shadow-xl p-12 border border-gray-200">
+                        <div className="max-w-4xl mx-auto">
+                            {/* Header */}
+                            <div className="mb-10 pb-8 border-b-2 border-gizblue">
+                                <div className="grid grid-cols-3 gap-4 items-center mb-8">
+                                    <div className="flex justify-start">
+                                        <img
+                                            src="assets/giz_logo.png"
+                                            alt="GIZ Logo"
+                                            className="h-16 object-contain"
+                                        />
+                                    </div>
+                                    <div className="text-center">
+                                        <h1 className="text-3xl font-bold text-gray-900 font-serif leading-tight">PRUDEV II</h1>
+                                        <p className="text-sm font-semibold text-gray-600 tracking-[0.2em] mt-1 uppercase">MSME Support Programme</p>
+                                        <p className="text-xs font-bold text-gizblue mt-3 uppercase tracking-wider">Work package II: MSME Competitiveness</p>
+                                    </div>
+                                    <div className="flex justify-end">
+                                        <img
+                                            src="assets/gopa_afc_logo.png"
+                                            alt="GOPA AFC Logo"
+                                            className="h-14 object-contain"
+                                        />
+                                    </div>
+                                </div>
+                                <div className="text-center">
+                                    <div className="inline-block px-8 py-2 border-2 border-gizblue rounded-lg">
+                                        <h2 className="text-2xl font-black text-gizblue uppercase tracking-[0.3em]">MSME Visit Report</h2>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Report Details */}
+                            <div className="space-y-6">
+                                <div className="grid grid-cols-2 gap-6 bg-gray-50 p-6 rounded-lg">
+                                    <div>
+                                        <p className="text-sm font-medium text-gray-600">Date</p>
+                                        <p className="text-lg font-semibold text-gray-900">{formData.date || 'N/A'}</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-sm font-medium text-gray-600">Location</p>
+                                        <div className="flex items-center space-x-2">
+                                            <p className="text-lg font-semibold text-gray-900">{formData.location || 'N/A'}</p>
+                                            {formData.gpsCaptured && (
+                                                <div className="bg-gizblue-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase print:border print:border-gizblue-600 print:text-gizblue-600">
+                                                    GPS Verified
+                                                </div>
+                                            )}
+                                        </div>
+                                        {formData.gpsCaptured && (
+                                            <p className="text-[10px] text-gray-500 font-mono mt-0.5">
+                                                LAT: {formData.latitude} | LONG: {formData.longitude}
+                                            </p>
+                                        )}
+                                    </div>
+                                    <div>
+                                        <p className="text-sm font-medium text-gray-600">BGE Name</p>
+                                        <p className="text-lg font-semibold text-gray-900">{formData.bgeName || 'N/A'}</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-sm font-medium text-gray-600">BGE Code</p>
+                                        <p className="text-lg font-semibold text-gray-900">{formData.bgeCode || 'N/A'}</p>
+                                    </div>
+                                    <div className="col-span-2">
+                                        <p className="text-sm font-medium text-gray-600">Business Name</p>
+                                        <p className="text-lg font-semibold text-gray-900">{formData.businessName || 'N/A'}</p>
+                                    </div>
+                                </div>
+
+                                {formData.objectives && (
+                                    <div>
+                                        <h3 className="text-lg font-semibold text-gray-900 mb-2 flex items-center">
+                                            <div className="w-1 h-6 bg-gizblue-600 mr-3"></div>
+                                            Objectives of the Visit
+                                        </h3>
+                                        <p className="text-gray-700 leading-relaxed pl-4">{formData.objectives}</p>
+                                    </div>
+                                )}
+
+                                {formData.activities && (
+                                    <div>
+                                        <h3 className="text-lg font-semibold text-gray-900 mb-2 flex items-center">
+                                            <div className="w-1 h-6 bg-gizblue-600 mr-3"></div>
+                                            Activities Undertaken
+                                        </h3>
+                                        <p className="text-gray-700 leading-relaxed pl-4">{formData.activities}</p>
+                                    </div>
+                                )}
+
+                                {formData.swot && (
+                                    <div>
+                                        <h3 className="text-lg font-semibold text-gray-900 mb-2 flex items-center">
+                                            <div className="w-1 h-6 bg-gizblue-600 mr-3"></div>
+                                            SWOT Analysis
+                                        </h3>
+                                        <p className="text-gray-700 leading-relaxed pl-4">{formData.swot}</p>
+                                    </div>
+                                )}
+
+                                {formData.leadership && (
+                                    <div>
+                                        <h3 className="text-lg font-semibold text-gray-900 mb-2 flex items-center">
+                                            <div className="w-1 h-6 bg-gizblue-600 mr-3"></div>
+                                            Leadership & Governance
+                                        </h3>
+                                        <p className="text-gray-700 leading-relaxed pl-4">{formData.leadership}</p>
+                                    </div>
+                                )}
+
+                                {formData.gender && (
+                                    <div>
+                                        <h3 className="text-lg font-semibold text-gray-900 mb-2 flex items-center">
+                                            <div className="w-1 h-6 bg-gizblue-600 mr-3"></div>
+                                            Gender Considerations
+                                        </h3>
+                                        <p className="text-gray-700 leading-relaxed pl-4">{formData.gender}</p>
+                                    </div>
+                                )}
+
+                                {formData.waste && (
+                                    <div>
+                                        <h3 className="text-lg font-semibold text-gray-900 mb-2 flex items-center">
+                                            <div className="w-1 h-6 bg-gizblue-600 mr-3"></div>
+                                            Waste Management
+                                        </h3>
+                                        <p className="text-gray-700 leading-relaxed pl-4">{formData.waste}</p>
+                                    </div>
+                                )}
+
+                                {formData.climate && (
+                                    <div>
+                                        <h3 className="text-lg font-semibold text-gray-900 mb-2 flex items-center">
+                                            <div className="w-1 h-6 bg-gizblue-600 mr-3"></div>
+                                            Climate Change Adaptation
+                                        </h3>
+                                        <p className="text-gray-700 leading-relaxed pl-4">{formData.climate}</p>
+                                    </div>
+                                )}
+
+                                {formData.bdsActions && (
+                                    <div>
+                                        <h3 className="text-lg font-semibold text-gray-900 mb-2 flex items-center">
+                                            <div className="w-1 h-6 bg-gizblue-600 mr-3"></div>
+                                            BDS Actions & Recommendations
+                                        </h3>
+                                        <p className="text-gray-700 leading-relaxed pl-4">{formData.bdsActions}</p>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Footer */}
+                            <div className="mt-12 pt-6 border-t border-gray-300 text-center text-sm text-gray-600">
+                                <p>Generated on {new Date().toLocaleDateString()} • PRUDEV II MSME Support Portal</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Render App
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+
+</html>
