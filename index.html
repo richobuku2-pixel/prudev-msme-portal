@@ -357,7 +357,7 @@
             </button>
         );
 
-        const PairingForm = ({ bges, msmes, onPair }) => {
+        const PairingForm = ({ bges, msmes, assignments, onPair }) => {
             const [bge, setBge] = useState('');
             const [msme, setMsme] = useState('');
 
@@ -391,7 +391,9 @@
                             className="w-full bg-gray-50 border-none rounded-2xl px-4 py-3 text-sm font-medium focus:ring-2 focus:ring-gizblue-500"
                         >
                             <option value="">-- Choose MSME --</option>
-                            {msmes.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
+                            {msmes.filter(m => !assignments.some(a => a.msmeId === m.id)).map(m => (
+                                <option key={m.id} value={m.id}>{m.name}</option>
+                            ))}
                         </select>
                     </div>
                     <button
@@ -545,6 +547,12 @@
 
             // Assignment Management
             const addAssignment = (bgeId, msmeId) => {
+                // Prevent duplicate assignment for the same MSME
+                if (assignments.some(a => a.msmeId === msmeId)) {
+                    alert('This business is already assigned to an expert.');
+                    return;
+                }
+
                 const bge = bges.find(b => b.id === bgeId);
                 const msme = msmes.find(m => m.id === msmeId);
                 if (bge && msme) {
@@ -971,10 +979,10 @@
                                     </div>
 
                                     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-x-auto">
-                                        <table className="w-full text-left border-collapse">
+                                        <table className="w-full text-left border-collapse table-fixed">
                                             <thead>
                                                 <tr className="bg-gray-50 text-gray-500 text-[10px] uppercase tracking-widest border-b border-gray-100">
-                                                    <th className="px-6 py-4 font-bold w-1/3">
+                                                    <th className="px-6 py-4 font-bold w-[35%]">
                                                         <SortButton
                                                             label="BGE Name"
                                                             active={bgeSort.key === 'name'}
@@ -982,7 +990,7 @@
                                                             onClick={() => handleSort('bge', 'name')}
                                                         />
                                                     </th>
-                                                    <th className="px-6 py-4 font-bold w-1/4">
+                                                    <th className="px-6 py-4 font-bold w-[20%]">
                                                         <SortButton
                                                             label="Location"
                                                             active={bgeSort.key === 'location'}
@@ -990,7 +998,7 @@
                                                             onClick={() => handleSort('bge', 'location')}
                                                         />
                                                     </th>
-                                                    <th className="px-6 py-4 font-bold w-1/6">
+                                                    <th className="px-6 py-4 font-bold w-[15%]">
                                                         <SortButton
                                                             label="Code"
                                                             active={bgeSort.key === 'code'}
@@ -998,19 +1006,19 @@
                                                             onClick={() => handleSort('bge', 'code')}
                                                         />
                                                     </th>
-                                                    <th className="px-6 py-4 font-bold uppercase tracking-widest">Specialisation</th>
-                                                    <th className="px-6 py-4 font-bold text-right w-[80px] uppercase tracking-widest">Actions</th>
+                                                    <th className="px-6 py-4 font-bold uppercase tracking-widest w-[20%]">Specialisation</th>
+                                                    <th className="px-6 py-4 font-bold text-right w-[10%] uppercase tracking-widest">Actions</th>
                                                 </tr>
                                             </thead>
                                             <tbody className="divide-y divide-gray-50">
                                                 {filteredBges.map(bge => (
                                                     <tr key={bge.id} className="hover:bg-gizblue-50/30 transition-colors group">
                                                         <td className="px-6 py-4">
-                                                            <div className="font-bold text-gray-900">{bge.name}</div>
+                                                            <div className="font-bold text-gray-900 truncate" title={bge.name}>{bge.name}</div>
                                                         </td>
-                                                        <td className="px-6 py-4 text-sm text-gray-600">{bge.location}</td>
+                                                        <td className="px-6 py-4 text-sm text-gray-600 truncate" title={bge.location}>{bge.location}</td>
                                                         <td className="px-6 py-4 text-sm font-mono text-gizblue-600">{bge.code}</td>
-                                                        <td className="px-6 py-4 text-sm text-gray-500 italic">{bge.specialisation || '-'}</td>
+                                                        <td className="px-6 py-4 text-sm text-gray-500 italic truncate" title={bge.specialisation || '-'}>{bge.specialisation || '-'}</td>
                                                         <td className="px-6 py-4 text-right">
                                                             <button onClick={() => deleteBge(bge.id)} className="text-red-400 hover:text-gopared-600 opacity-0 group-hover:opacity-100 transition-all p-2 bg-gopared-50 rounded-lg">
                                                                 <Trash2 className="w-4 h-4" />
@@ -1161,10 +1169,10 @@
                                     </div>
 
                                     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-x-auto">
-                                        <table className="w-full text-left border-collapse">
+                                        <table className="w-full text-left border-collapse table-fixed">
                                             <thead>
                                                 <tr className="bg-gray-50 text-gray-500 text-[10px] uppercase tracking-widest border-b border-gray-100">
-                                                    <th className="px-6 py-4 font-bold w-1/3">
+                                                    <th className="px-6 py-4 font-bold w-[35%]">
                                                         <SortButton
                                                             label="Business Name"
                                                             active={msmeSort.key === 'name'}
@@ -1172,7 +1180,7 @@
                                                             onClick={() => handleSort('msme', 'name')}
                                                         />
                                                     </th>
-                                                    <th className="px-6 py-4 font-bold w-1/4">
+                                                    <th className="px-6 py-4 font-bold w-[25%]">
                                                         <SortButton
                                                             label="Location"
                                                             active={msmeSort.key === 'location'}
@@ -1180,23 +1188,23 @@
                                                             onClick={() => handleSort('msme', 'location')}
                                                         />
                                                     </th>
-                                                    <th className="px-6 py-4 font-bold w-1/4 uppercase tracking-widest">Contact & Role</th>
-                                                    <th className="px-6 py-4 font-bold text-right w-[80px] uppercase tracking-widest">Actions</th>
+                                                    <th className="px-6 py-4 font-bold w-[30%] uppercase tracking-widest">Contact & Role</th>
+                                                    <th className="px-6 py-4 font-bold text-right w-[10%] uppercase tracking-widest">Actions</th>
                                                 </tr>
                                             </thead>
                                             <tbody className="divide-y divide-gray-50">
                                                 {filteredMsmes.map(msme => (
                                                     <tr key={msme.id} className="hover:bg-gizblue-50/30 transition-colors group">
-                                                        <td className="px-6 py-4">
-                                                            <div className="font-bold text-gray-900">{msme.name}</div>
-                                                            <div className="text-xs text-gray-500">{msme.mobile || msme.businessEmail}</div>
+                                                        <td className="px-6 py-4 whitespace-nowrap overflow-hidden">
+                                                            <div className="font-bold text-gray-900 truncate" title={msme.name}>{msme.name}</div>
+                                                            <div className="text-xs text-gray-500 truncate" title={msme.mobile || msme.businessEmail}>{msme.mobile || msme.businessEmail}</div>
                                                         </td>
-                                                        <td className="px-6 py-4">
-                                                            <div className="text-sm text-gray-600">{msme.location || (msme.townCity ? `${msme.townCity}, ${msme.district}` : 'Unknown')}</div>
+                                                        <td className="px-6 py-4 whitespace-nowrap overflow-hidden">
+                                                            <div className="text-sm text-gray-600 truncate" title={msme.location || (msme.townCity ? `${msme.townCity}, ${msme.district}` : 'Unknown')}>{msme.location || (msme.townCity ? `${msme.townCity}, ${msme.district}` : 'Unknown')}</div>
                                                         </td>
-                                                        <td className="px-6 py-4 text-sm text-gray-500">
-                                                            {msme.contactPerson || '-'}
-                                                            <div className="text-xs italic">{msme.businessRole}</div>
+                                                        <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap overflow-hidden">
+                                                            <div className="truncate font-medium text-gray-700" title={msme.contactPerson}>{msme.contactPerson || '-'}</div>
+                                                            <div className="text-xs italic truncate" title={msme.businessRole}>{msme.businessRole}</div>
                                                         </td>
                                                         <td className="px-6 py-4 text-right">
                                                             <button onClick={() => deleteMsme(msme.id)} className="text-red-400 hover:text-gopared-600 opacity-0 group-hover:opacity-100 transition-all p-2 bg-gopared-50 rounded-lg">
@@ -1224,6 +1232,7 @@
                                             <PairingForm
                                                 bges={bges}
                                                 msmes={msmes}
+                                                assignments={assignments}
                                                 onPair={addAssignment}
                                             />
                                         </div>
