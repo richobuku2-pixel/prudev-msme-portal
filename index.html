@@ -837,6 +837,15 @@
                 return Array.from(locations).sort();
             }, [msmes, selectedCohort]);
 
+            const filteredReports = useMemo(() => {
+                const query = searchQuery.toLowerCase();
+                return reports.filter(r =>
+                    (r.bgeName || '').toLowerCase().includes(query) ||
+                    (r.businessName || '').toLowerCase().includes(query) ||
+                    (r.date || '').toLowerCase().includes(query)
+                ).sort((a, b) => new Date(b.date) - new Date(a.date));
+            }, [reports, searchQuery]);
+
             return (
                 <div className="flex bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100 min-h-[800px] fade-in">
                     {/* Sidebar */}
@@ -1239,7 +1248,7 @@
                                         <div className="lg:col-span-2">
                                             <div className="flex items-center justify-between mb-4">
                                                 <div className="flex items-center space-x-3">
-                                                    <h4 className="font-bold text-gray-800">Assignments by Expert ({bges.length})</h4>
+                                                    <h4 className="font-bold text-gray-800">Assignments by Expert ({filteredBges.length})</h4>
                                                     <button
                                                         onClick={selectAllBges}
                                                         className="text-[10px] font-bold uppercase tracking-widest text-gizblue-600 bg-gizblue-50 px-2 py-1 rounded-md hover:bg-gizblue-100 transition-colors"
@@ -1265,7 +1274,7 @@
                                                 </button>
                                             </div>
                                             <div className="space-y-4">
-                                                {bges.map(bge => {
+                                                {filteredBges.map(bge => {
                                                     const bgeAssignments = assignments.filter(a => a.bgeId === bge.id);
                                                     const isExpanded = expandedBgeId === bge.id;
 
@@ -1365,7 +1374,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody className="divide-y divide-gray-50">
-                                                {bges.map(bge => ({
+                                                {filteredBges.map(bge => ({
                                                     ...bge,
                                                     msmeCount: [...new Set(assignments.filter(a => a.bgeId === bge.id).map(a => a.msmeId))].length,
                                                     reportCount: reports.filter(r => r.bgeName === bge.name).length
@@ -1424,7 +1433,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody className="divide-y divide-gray-50">
-                                                {reports.map((report, index) => (
+                                                {filteredReports.map((report, index) => (
                                                     <tr key={report.id || index} className="hover:bg-gizblue-50/30 transition-colors">
                                                         <td className="px-6 py-4 text-sm text-gray-600">{report.date}</td>
                                                         <td className="px-6 py-4">
