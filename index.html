@@ -760,6 +760,7 @@
             const [bgeSort, setBgeSort] = useState({ key: 'name', dir: 'asc' });
             const [msmeSort, setMsmeSort] = useState({ key: 'name', dir: 'asc' });
             const [msmeLocationFilter, setMsmeLocationFilter] = useState('all');
+            const [leaderboardSort, setLeaderboardSort] = useState('reports'); // 'reports' or 'msmes'
 
             // Selection for Matrix Export
             const [selectedBgeIds, setSelectedBgeIds] = useState([]);
@@ -1350,13 +1351,28 @@
 
                             {activeTab === 'leaderboard' && (
                                 <div className="space-y-6">
-                                    <div className="flex justify-end mb-4">
+                                    <div className="flex justify-between items-center mb-6">
+                                        <div className="flex bg-gray-100 p-1 rounded-xl">
+                                            <button
+                                                onClick={() => setLeaderboardSort('reports')}
+                                                className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${leaderboardSort === 'reports' ? 'bg-white shadow text-gizblue-600' : 'text-gray-500 hover:text-gray-700'}`}
+                                            >
+                                                Rank by Completion
+                                            </button>
+                                            <button
+                                                onClick={() => setLeaderboardSort('msmes')}
+                                                className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${leaderboardSort === 'msmes' ? 'bg-white shadow text-gizblue-600' : 'text-gray-500 hover:text-gray-700'}`}
+                                            >
+                                                Rank by Assignments
+                                            </button>
+                                        </div>
                                         <CSVExportButton
                                             data={bges.map(bge => ({
                                                 Name: bge.name,
                                                 Code: bge.code,
                                                 Specialisation: bge.specialisation,
-                                                ReportsCount: reports.filter(r => r.bgeName === bge.name).length
+                                                ReportsCount: reports.filter(r => r.bgeName === bge.name).length,
+                                                AssignmentsCount: assignments.filter(a => a.bgeId === bge.id).length
                                             })).sort((a, b) => b.ReportsCount - a.ReportsCount)}
                                             filename="bge_leaderboard"
                                             type="Leaderboard"
@@ -1376,10 +1392,10 @@
                                             <tbody className="divide-y divide-gray-50">
                                                 {filteredBges.map(bge => ({
                                                     ...bge,
-                                                    msmeCount: [...new Set(assignments.filter(a => a.bgeId === bge.id).map(a => a.msmeId))].length,
+                                                    msmeCount: assignments.filter(a => a.bgeId === bge.id).length,
                                                     reportCount: reports.filter(r => r.bgeName === bge.name).length
                                                 }))
-                                                    .sort((a, b) => b.reportCount - a.reportCount)
+                                                    .sort((a, b) => leaderboardSort === 'reports' ? b.reportCount - a.reportCount : b.msmeCount - a.msmeCount)
                                                     .map((bge, index) => (
                                                         <tr key={bge.id} className="hover:bg-gizblue-50/30 transition-colors">
                                                             <td className="px-6 py-4">
@@ -1396,12 +1412,12 @@
                                                             </td>
                                                             <td className="px-6 py-4 text-sm text-gray-600">{bge.specialisation || '-'}</td>
                                                             <td className="px-6 py-4 text-center">
-                                                                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-gizgreen-50 text-gizgreen-600">
+                                                                <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-bold ${leaderboardSort === 'msmes' ? 'bg-gizblue-600 text-white' : 'bg-gizgreen-50 text-gizgreen-600'}`}>
                                                                     {bge.msmeCount}
                                                                 </span>
                                                             </td>
                                                             <td className="px-6 py-4 text-center">
-                                                                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-gizblue-50 text-gizblue-600">
+                                                                <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-bold ${leaderboardSort === 'reports' ? 'bg-gizblue-600 text-white' : 'bg-gizblue-50 text-gizblue-600'}`}>
                                                                     {bge.reportCount}
                                                                 </span>
                                                             </td>
@@ -1638,61 +1654,69 @@
                                     </div>
                                 </div>
 
-                                {/* Matrix Content */}
-                                <div className="space-y-8">
-                                    {(selectedBgeIds.length > 0
-                                        ? bges.filter(b => selectedBgeIds.includes(b.id))
-                                        : bges
-                                    ).map((bge, idx) => {
-                                        const bgeAssignments = assignments.filter(a => a.bgeId === bge.id);
-                                        return (
-                                            <div key={bge.id} className="avoid-break shadow-sm border border-gray-100 rounded-2xl overflow-hidden">
-                                                <div className="bg-gray-50 px-6 py-4 border-b border-gray-100 flex justify-between items-center">
-                                                    <div>
-                                                        <h3 className="text-lg font-bold text-gray-900">{idx + 1}. {bge.name}</h3>
-                                                        <p className="text-[10px] text-gizblue font-black uppercase tracking-widest">{bge.code} • {bge.specialisation || 'Generalist'}</p>
-                                                    </div>
-                                                    <div className="text-right">
-                                                        <p className="text-xl font-black text-gizblue-600">{bgeAssignments.length}</p>
-                                                        <p className="text-[8px] text-gray-500 uppercase font-black tracking-tighter">Assigned MSMEs</p>
-                                                    </div>
-                                                </div>
-                                                <div className="p-6">
-                                                    {bgeAssignments.length > 0 ? (
-                                                        <div className="grid grid-cols-1 gap-4">
-                                                            {bgeAssignments.map(a => {
-                                                                const msme = msmes.find(m => m.id === a.msmeId);
-                                                                return (
-                                                                    <div key={a.id} className="grid grid-cols-4 gap-4 p-4 bg-white rounded-xl border border-gray-100 items-center">
-                                                                        <div className="col-span-1">
-                                                                            <p className="text-xs font-black text-gray-900 leading-tight uppercase">{a.msmeName}</p>
-                                                                            <p className="text-[10px] text-gray-500 font-bold">Cohort {msme?.cohort || '?'}</p>
-                                                                        </div>
-                                                                        <div className="col-span-1">
-                                                                            <p className="text-[10px] text-gray-400 uppercase font-bold mb-0.5">Location</p>
-                                                                            <p className="text-[11px] font-bold text-gray-700">{msme?.townCity || msme?.location || 'N/A'}</p>
-                                                                            <p className="text-[9px] text-gray-500">{msme?.district || ''}</p>
-                                                                        </div>
-                                                                        <div className="col-span-1">
-                                                                            <p className="text-[10px] text-gray-400 uppercase font-bold mb-0.5">Contact</p>
-                                                                            <p className="text-[11px] font-bold text-gray-700">{msme?.contactPerson || 'N/A'}</p>
-                                                                            <p className="text-[9px] text-gizblue-600 font-bold">{msme?.mobile || 'No Phone'}</p>
-                                                                        </div>
-                                                                        <div className="col-span-1 text-right">
-                                                                            <p className="text-[10px] text-gray-400 uppercase font-bold mb-0.5">Role/Focus</p>
-                                                                            <p className="text-[11px] italic text-gray-600">{msme?.businessRole || 'General'}</p>
-                                                                        </div>
-                                                                    </div>
-                                                                );
-                                                            })}
-                                                        </div>
-                                                    ) : (
-                                                        <p className="text-sm italic text-gray-400 py-2">No MSMEs assigned to this expert.</p>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
+                                <div className="space-y-0">
+                                    <table className="w-full border-collapse border border-gray-300">
+                                        <thead>
+                                            <tr className="bg-gray-100">
+                                                <th className="border border-gray-300 px-4 py-3 text-left w-1/3 text-xs font-bold uppercase">Business Growth Expert (BGE)</th>
+                                                <th className="border border-gray-300 px-4 py-3 text-left w-2/3 text-xs font-bold uppercase">Assigned MSMEs & Details</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {(selectedBgeIds.length > 0
+                                                ? bges.filter(b => selectedBgeIds.includes(b.id))
+                                                : bges
+                                            ).map((bge, idx) => {
+                                                const bgeAssignments = assignments.filter(a => a.bgeId === bge.id);
+                                                return (
+                                                    <tr key={bge.id} className="avoid-break">
+                                                        <td className="border border-gray-300 p-4 align-top">
+                                                            <p className="font-bold text-gray-900">{idx + 1}. {bge.name}</p>
+                                                            <p className="text-[10px] text-gizblue font-black uppercase tracking-widest mt-1">{bge.code}</p>
+                                                            <p className="text-[10px] text-gray-500 italic mt-1">{bge.specialisation || 'Generalist'}</p>
+                                                            <div className="mt-4 pt-2 border-t border-gray-100">
+                                                                <p className="text-[10px] text-gray-400 font-bold uppercase">Total Load</p>
+                                                                <p className="text-lg font-black text-gizblue-600">{bgeAssignments.length}</p>
+                                                            </div>
+                                                        </td>
+                                                        <td className="border border-gray-300 p-0 align-top">
+                                                            {bgeAssignments.length > 0 ? (
+                                                                <div className="divide-y divide-gray-200">
+                                                                    {bgeAssignments.map(a => {
+                                                                        const msme = msmes.find(m => m.id === a.msmeId);
+                                                                        return (
+                                                                            <div key={a.id} className="p-4 grid grid-cols-2 gap-x-6 gap-y-2">
+                                                                                <div className="col-span-1">
+                                                                                    <p className="text-xs font-black text-gray-900 uppercase">{a.msmeName}</p>
+                                                                                    <p className="text-[10px] text-gray-500 font-bold">Cohort {msme?.cohort || '?'}</p>
+                                                                                </div>
+                                                                                <div className="col-span-1">
+                                                                                    <p className="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">Contact Person</p>
+                                                                                    <p className="text-[10px] font-bold text-gray-700">{msme?.contactPerson || 'N/A'}</p>
+                                                                                </div>
+                                                                                <div className="col-span-1">
+                                                                                    <p className="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">Location</p>
+                                                                                    <p className="text-[10px] font-bold text-gray-700">{msme?.townCity || msme?.location || 'N/A'}</p>
+                                                                                    <p className="text-[9px] text-gray-500">{msme?.district || ''}</p>
+                                                                                </div>
+                                                                                <div className="col-span-1">
+                                                                                    <p className="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">Contact Info</p>
+                                                                                    <p className="text-[10px] font-black text-gizblue-600">{msme?.mobile || 'No Phone'}</p>
+                                                                                    <p className="text-[10px] italic text-gray-500">{msme?.businessRole || 'General'}</p>
+                                                                                </div>
+                                                                            </div>
+                                                                        );
+                                                                    })}
+                                                                </div>
+                                                            ) : (
+                                                                <p className="text-sm italic text-gray-400 p-4">No MSMEs assigned to this expert.</p>
+                                                            )}
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
+                                        </tbody>
+                                    </table>
                                 </div>
 
                                 {/* Footer */}
