@@ -740,7 +740,7 @@
                         </div>
                         <button
                             type="submit"
-                            className="w-full bg-gizblue-600 text-white py-3 rounded-lg font-medium hover:bg-gizblue-700 transition-colors shadow-lg hover:shadow-xl"
+                            className="w-full bg-gizblue-600 text-white font-bold py-3 px-6 rounded-2xl hover:bg-gizblue-700 transition-all shadow-lg shadow-gizblue-200"
                         >
                             Access Admin Panel
                         </button>
@@ -1030,7 +1030,7 @@
                                                         <td className="px-6 py-4 text-sm font-mono text-gizblue-600">{bge.code}</td>
                                                         <td className="px-6 py-4 text-sm text-gray-500 italic truncate" title={bge.specialisation || '-'}>{bge.specialisation || '-'}</td>
                                                         <td className="px-6 py-4 text-right">
-                                                            <button onClick={() => deleteBge(bge.id)} className="text-red-400 hover:text-gopared-600 opacity-0 group-hover:opacity-100 transition-all p-2 bg-gopared-50 rounded-lg">
+                                                            <button onClick={() => deleteBge(bge.id)} className="text-red-400 hover:text-gopared-600 opacity-0 group-hover:opacity-100 transition-all p-2 bg-gopared-50 rounded-2xl">
                                                                 <Trash2 className="w-4 h-4" />
                                                             </button>
                                                         </td>
@@ -1051,16 +1051,16 @@
                                 <div className="space-y-6">
                                     <div className="flex items-center justify-between mb-6">
                                         <div className="flex items-center space-x-4">
-                                            <div className="flex bg-gray-100 p-1 rounded-xl">
+                                            <div className="flex bg-gray-100 p-1 rounded-2xl">
                                                 <button
                                                     onClick={() => setSelectedCohort('1')}
-                                                    className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${selectedCohort === '1' ? 'bg-white shadow text-gizblue-600' : 'text-gray-500 hover:text-gray-700'}`}
+                                                    className={`px-4 py-2 rounded-2xl text-sm font-bold transition-all ${selectedCohort === '1' ? 'bg-white shadow text-gizblue-600' : 'text-gray-500 hover:text-gray-700'}`}
                                                 >
                                                     Cohort 1
                                                 </button>
                                                 <button
                                                     onClick={() => setSelectedCohort('2')}
-                                                    className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${selectedCohort === '2' ? 'bg-white shadow text-gizblue-600' : 'text-gray-500 hover:text-gray-700'}`}
+                                                    className={`px-4 py-2 rounded-2xl text-sm font-bold transition-all ${selectedCohort === '2' ? 'bg-white shadow text-gizblue-600' : 'text-gray-500 hover:text-gray-700'}`}
                                                 >
                                                     Cohort 2
                                                 </button>
@@ -1069,7 +1069,7 @@
                                                 <select
                                                     value={msmeLocationFilter}
                                                     onChange={(e) => setMsmeLocationFilter(e.target.value)}
-                                                    className="bg-gray-50 border-none rounded-xl text-xs font-bold text-gray-600 px-4 py-3 focus:ring-2 focus:ring-gizblue-500 appearance-none pr-10"
+                                                    className="bg-gray-50 border-none rounded-2xl text-xs font-bold text-gray-600 px-4 py-3 focus:ring-2 focus:ring-gizblue-500 appearance-none pr-10"
                                                 >
                                                     <option value="all">All Locations</option>
                                                     {uniqueLocations.map(loc => (
@@ -1169,7 +1169,7 @@
                                             <div className="border-l border-gray-200 h-10 mx-2"></div>
                                             <button
                                                 onClick={clearAllMsmes}
-                                                className="flex items-center space-x-2 text-gray-400 hover:text-red-500 px-3 py-2 rounded-xl text-xs font-bold transition-all"
+                                                className="flex items-center space-x-2 text-gray-400 hover:text-red-500 px-3 py-2 rounded-2xl text-xs font-bold transition-all"
                                                 title="CAUTION: Erase all MSME data"
                                             >
                                                 <Trash2 className="w-3.5 h-3.5" />
@@ -1217,7 +1217,7 @@
                                                             <div className="text-xs italic truncate" title={msme.businessRole}>{msme.businessRole}</div>
                                                         </td>
                                                         <td className="px-6 py-4 text-right">
-                                                            <button onClick={() => deleteMsme(msme.id)} className="text-red-400 hover:text-gopared-600 opacity-0 group-hover:opacity-100 transition-all p-2 bg-gopared-50 rounded-lg">
+                                                            <button onClick={() => deleteMsme(msme.id)} className="text-red-400 hover:text-gopared-600 opacity-0 group-hover:opacity-100 transition-all p-2 bg-gopared-50 rounded-2xl">
                                                                 <Trash2 className="w-4 h-4" />
                                                             </button>
                                                         </td>
@@ -1252,7 +1252,7 @@
                                                     <h4 className="font-bold text-gray-800">Assignments by Expert ({filteredBges.length})</h4>
                                                     <button
                                                         onClick={selectAllBges}
-                                                        className="text-[10px] font-bold uppercase tracking-widest text-gizblue-600 bg-gizblue-50 px-2 py-1 rounded-md hover:bg-gizblue-100 transition-colors"
+                                                        className="text-[10px] font-bold uppercase tracking-widest text-gizblue-600 bg-gizblue-50 px-2 py-1 rounded-2xl hover:bg-gizblue-100 transition-colors"
                                                     >
                                                         {selectedBgeIds.length === bges.length ? 'Deselect All' : 'Select All'}
                                                     </button>
@@ -1265,7 +1265,7 @@
                                                         }
                                                         window.print();
                                                     }}
-                                                    className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-sm font-bold transition-all shadow-md active:scale-95 ${selectedBgeIds.length > 0
+                                                    className={`flex items-center space-x-2 px-4 py-2 rounded-2xl text-sm font-bold transition-all shadow-md active:scale-95 ${selectedBgeIds.length > 0
                                                         ? 'bg-gizblue-600 text-white hover:bg-gizblue-700'
                                                         : 'bg-gray-100 text-gray-400 cursor-not-allowed shadow-none'
                                                         }`}
@@ -1274,75 +1274,75 @@
                                                     <span>Export {selectedBgeIds.length > 0 ? `(${selectedBgeIds.length}) ` : ''}Matrix</span>
                                                 </button>
                                             </div>
-                                            <div className="space-y-4">
-                                                {filteredBges.map(bge => {
-                                                    const bgeAssignments = assignments.filter(a => a.bgeId === bge.id);
-                                                    const isExpanded = expandedBgeId === bge.id;
-
-                                                    return (
-                                                        <div key={bge.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden transition-all hover:border-gizblue-200">
-                                                            <div className="flex items-center p-4 hover:bg-gray-50/50 transition-colors">
-                                                                <div className="flex items-center pr-4">
-                                                                    <input
-                                                                        type="checkbox"
-                                                                        checked={selectedBgeIds.includes(bge.id)}
-                                                                        onChange={(e) => {
-                                                                            e.stopPropagation();
-                                                                            toggleBgeSelection(bge.id);
-                                                                        }}
-                                                                        className="w-4 h-4 text-gizblue-600 border-gray-300 rounded focus:ring-gizblue-500 cursor-pointer"
-                                                                    />
-                                                                </div>
-                                                                <button
-                                                                    onClick={() => setExpandedBgeId(isExpanded ? null : bge.id)}
-                                                                    className="flex-1 flex items-center justify-between"
-                                                                >
-                                                                    <div className="flex items-center space-x-4">
-                                                                        <div className="p-2 bg-gizblue-50 rounded-xl">
-                                                                            <Users className="w-5 h-5 text-gizblue-600" />
-                                                                        </div>
-                                                                        <div className="text-left">
-                                                                            <p className="font-bold text-gray-900">{bge.name}</p>
-                                                                            <p className="text-xs text-gray-500">{bge.code} • {bgeAssignments.length} Assignments</p>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div className={`transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>
-                                                                        <ChevronDown className="w-5 h-5 text-gray-400" />
-                                                                    </div>
-                                                                </button>
-                                                            </div>
-
-                                                            {isExpanded && (
-                                                                <div className="p-4 bg-gray-50 border-t border-gray-50 space-y-2 animate-in slide-in-from-top-2 duration-300">
-                                                                    {bgeAssignments.length > 0 ? (
-                                                                        bgeAssignments.map(a => (
-                                                                            <div key={a.id} className="bg-white p-3 rounded-xl border border-gray-100 shadow-sm flex items-center justify-between group">
-                                                                                <div className="flex items-center space-x-3">
-                                                                                    <div className="p-1.5 bg-gizgreen-50 rounded-lg">
-                                                                                        <Building className="w-4 h-4 text-gizgreen-600" />
-                                                                                    </div>
-                                                                                    <span className="text-sm font-medium text-gray-700">{a.msmeName}</span>
-                                                                                </div>
-                                                                                <button onClick={() => deleteAssignment(a.id)} className="text-red-400 hover:text-gopared-600 p-1.5 opacity-0 group-hover:opacity-100 transition-all bg-gopared-50 rounded-lg">
-                                                                                    <Trash2 className="w-4 h-4" />
-                                                                                </button>
+                                            <div className="bg-white rounded-3xl border border-gray-100 overflow-hidden shadow-sm">
+                                                <table className="w-full text-left border-collapse">
+                                                    <thead>
+                                                        <tr className="bg-gray-50 text-gray-500 text-[10px] uppercase tracking-widest border-b border-gray-100">
+                                                            <th className="px-6 py-4 font-bold w-1/3">Business Growth Expert</th>
+                                                            <th className="px-6 py-4 font-bold w-2/3">Assigned MSMEs</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody className="divide-y divide-gray-50">
+                                                        {filteredBges.map(bge => {
+                                                            const bgeAssignments = assignments.filter(a => a.bgeId === bge.id);
+                                                            return (
+                                                                <tr key={bge.id} className="hover:bg-gizblue-50/20 transition-colors">
+                                                                    <td className="px-6 py-6 align-top">
+                                                                        <div className="space-y-1">
+                                                                            <h5 className="font-bold text-gray-900 text-sm">{bge.name}</h5>
+                                                                            <p className="text-[10px] text-gizblue font-black tracking-widest uppercase">{bge.code}</p>
+                                                                            <p className="text-[10px] text-gray-400 font-medium italic">{bge.specialisation || 'Generalist'}</p>
+                                                                            <div className="mt-4 inline-flex items-center px-2 py-1 bg-gizblue-50 rounded-full">
+                                                                                <span className="text-[9px] font-bold text-gizblue-600 uppercase tracking-tighter mr-2">Load:</span>
+                                                                                <span className="text-[11px] font-black text-gizblue-700">{bgeAssignments.length}</span>
                                                                             </div>
-                                                                        ))
-                                                                    ) : (
-                                                                        <div className="py-8 text-center text-gray-400 text-sm">
-                                                                            No assignments for this expert yet.
                                                                         </div>
-                                                                    )}
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                    );
-                                                })}
-                                                {bges.length === 0 && (
-                                                    <div className="p-12 text-center text-gray-400 border-2 border-dashed border-gray-100 rounded-3xl">
-                                                        No BGEs available. Upload a BGE list first.
-                                                    </div>
-                                                )}
+                                                                    </td>
+                                                                    <td className="px-6 py-6 align-top">
+                                                                        {bgeAssignments.length > 0 ? (
+                                                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                                                                {bgeAssignments.map(a => {
+                                                                                    const msme = msmes.find(m => m.id === a.msmeId);
+                                                                                    return (
+                                                                                        <div key={a.id} className="bg-gray-50/50 p-3 rounded-2xl border border-gray-100/50 flex items-center justify-between group hover:border-gizblue-200 hover:bg-white transition-all shadow-sm hover:shadow-gizblue-100">
+                                                                                            <div className="flex items-center space-x-3 overflow-hidden">
+                                                                                                <div className="flex-shrink-0 p-2 bg-white rounded-2xl">
+                                                                                                    <Building className="w-4 h-4 text-gizgreen-600" />
+                                                                                                </div>
+                                                                                                <div className="min-w-0">
+                                                                                                    <p className="text-[11px] font-bold text-gray-900 truncate uppercase">{a.msmeName}</p>
+                                                                                                    <p className="text-[9px] text-gray-400 font-medium">{msme?.townCity || 'N/A'}</p>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <button
+                                                                                                onClick={() => deleteAssignment(a.id)}
+                                                                                                className="text-red-300 hover:text-gopared-600 p-1.5 opacity-0 group-hover:opacity-100 transition-all bg-white rounded-full shadow-sm"
+                                                                                                title="Remove Assignment"
+                                                                                            >
+                                                                                                <Trash2 className="w-3 h-3" />
+                                                                                            </button>
+                                                                                        </div>
+                                                                                    );
+                                                                                })}
+                                                                            </div>
+                                                                        ) : (
+                                                                            <div className="py-2 text-gray-400 text-xs italic">
+                                                                                No assignments found for this expert.
+                                                                            </div>
+                                                                        )}
+                                                                    </td>
+                                                                </tr>
+                                                            );
+                                                        })}
+                                                        {filteredBges.length === 0 && (
+                                                            <tr>
+                                                                <td colSpan="2" className="p-12 text-center text-gray-400 text-sm italic">
+                                                                    No records matching your search.
+                                                                </td>
+                                                            </tr>
+                                                        )}
+                                                    </tbody>
+                                                </table>
                                             </div>
                                         </div>
                                     </div>
@@ -1352,16 +1352,16 @@
                             {activeTab === 'leaderboard' && (
                                 <div className="space-y-6">
                                     <div className="flex justify-between items-center mb-6">
-                                        <div className="flex bg-gray-100 p-1 rounded-xl">
+                                        <div className="flex bg-gray-100 p-1 rounded-2xl">
                                             <button
                                                 onClick={() => setLeaderboardSort('reports')}
-                                                className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${leaderboardSort === 'reports' ? 'bg-white shadow text-gizblue-600' : 'text-gray-500 hover:text-gray-700'}`}
+                                                className={`px-4 py-2 rounded-2xl text-xs font-bold transition-all ${leaderboardSort === 'reports' ? 'bg-white shadow text-gizblue-600' : 'text-gray-500 hover:text-gray-700'}`}
                                             >
                                                 Rank by Completion
                                             </button>
                                             <button
                                                 onClick={() => setLeaderboardSort('msmes')}
-                                                className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${leaderboardSort === 'msmes' ? 'bg-white shadow text-gizblue-600' : 'text-gray-500 hover:text-gray-700'}`}
+                                                className={`px-4 py-2 rounded-2xl text-xs font-bold transition-all ${leaderboardSort === 'msmes' ? 'bg-white shadow text-gizblue-600' : 'text-gray-500 hover:text-gray-700'}`}
                                             >
                                                 Rank by Assignments
                                             </button>
@@ -1459,7 +1459,7 @@
                                                             <div className="flex items-center space-x-2">
                                                                 <span className="text-sm text-gray-700 font-medium">{report.businessName}</span>
                                                                 {report.gpsCaptured && (
-                                                                    <div title={`Verified: ${report.latitude}, ${report.longitude}`} className="p-1 bg-gizblue-50 text-gizblue-600 rounded-md">
+                                                                    <div title={`Verified: ${report.latitude}, ${report.longitude}`} className="p-1 bg-gizblue-50 text-gizblue-600 rounded-2xl">
                                                                         <MapPin className="w-3 h-3" />
                                                                     </div>
                                                                 )}
@@ -1469,14 +1469,17 @@
                                                             <div className="flex justify-end space-x-2">
                                                                 <button onClick={() => {
                                                                     alert('Detailed report view logic can be expanded here.');
-                                                                }} className="p-2 text-gizblue-600 bg-gizblue-50 rounded-lg">
+                                                                }} className="p-2 text-gizblue-600 bg-gizblue-50 rounded-2xl">
                                                                     <FileText className="w-4 h-4" />
                                                                 </button>
-                                                                <button onClick={() => {
-                                                                    if (confirm('Delete this report?')) {
-                                                                        setReports(prev => prev.filter((_, i) => i !== index));
-                                                                    }
-                                                                }} className="p-2 text-red-400 bg-gopared-50 rounded-lg">
+                                                                <button
+                                                                    onClick={() => {
+                                                                        if (confirm('Delete this report?')) {
+                                                                            setReports(prev => prev.filter((_, i) => i !== index));
+                                                                        }
+                                                                    }}
+                                                                    className="p-2 text-red-400 hover:text-gopared-600 hover:bg-gopared-50 rounded-2xl transition-all"
+                                                                >
                                                                     <Trash2 className="w-4 h-4" />
                                                                 </button>
                                                             </div>
