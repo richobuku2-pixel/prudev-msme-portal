@@ -1733,14 +1733,25 @@
                 }
 
                 const subject = encodeURIComponent(`New MSME Assignments - PRUDEV II`);
+                const ccAddresses = "stella.abote@gopa.eu,stephenmaxi.opwonya@gopa.eu";
 
                 let body = `Dear ${bge.name},\n\nPlease find below the list of MSMEs assigned to you for the PRUDEV II project:\n\n`;
                 assignedMsmes.forEach((m, i) => {
-                    body += `${i + 1}. ${m.name}\n   - Location: ${m.location || m.townCity || m.district}\n   - Contact: ${m.contactPerson || m.ownerName} (${m.mobile || m.ownerMobile})\n\n`;
+                    const phone = m.mobile || m.businessMobile || m.ownerMobile || 'N/A';
+                    const email = m.contactEmail || m.businessEmail || m.ownerEmail || 'N/A';
+                    const location = m.location || m.townCity || m.district || 'N/A';
+                    const physicalAddress = m.location || 'N/A';
+
+                    body += `${i + 1}. ${m.name}\n`;
+                    body += `   - Town/District: ${location}\n`;
+                    body += `   - Physical Location: ${physicalAddress}\n`;
+                    body += `   - Contact Person: ${m.contactPerson || m.ownerName || 'N/A'}\n`;
+                    body += `   - Phone: ${phone}\n`;
+                    body += `   - Email: ${email}\n\n`;
                 });
                 body += `Please prioritize contacting them this week.\n\nBest regards,\nPRUDEV II Admin Team`;
 
-                const mailtoLink = `mailto:?subject=${subject}&body=${encodeURIComponent(body)}`;
+                const mailtoLink = `mailto:${bge.email || ''}?cc=${ccAddresses}&subject=${subject}&body=${encodeURIComponent(body)}`;
 
                 // Check length limits (approx 2000 chars for safe mailto)
                 if (mailtoLink.length > 2000) {
@@ -1777,7 +1788,7 @@
 
                 const email = msme.contactEmail || msme.businessEmail || msme.ownerEmail;
                 const subject = encodeURIComponent(`Your BGE Assignment - PRUDEV II`);
-                const body = encodeURIComponent(`Dear ${msme.contactPerson || msme.ownerName || msme.name},\n\nWe are pleased to inform you that you have been matched with a Business Growth Expert (BGE) for the PRUDEV II support program.\n\n**Your Assigned Expert:**\nName: ${bge.name}\nSpecialisation: ${bge.specialisation || 'General Business Support'}\n\nPlease expect a call or visit from them shortly to begin the diagnostic process.\n\nBest regards,\nPRUDEV II Admin Team`);
+                const body = encodeURIComponent(`Dear ${msme.contactPerson || msme.ownerName || msme.name},\n\nWe are pleased to inform you that you have been matched with a Business Growth Expert (BGE) as part of the PRUDEV II MSME Support Program.\n\nYour assigned expert will support you with technical assistance and business diagnostic services to help grow your enterprise.\n\nExpert Profile:\n- Name: ${bge.name}\n- Specialisation: ${bge.specialisation || 'Business Development and Strategy Support'}\n\nPlease expect a call or visit from ${bge.name} within the next few days to schedule your first diagnostic meeting. We look forward to seeing your business thrive through this partnership.\n\nBest regards,\nPRUDEV II Project Team\nGIZ-PRUDEV Support Portal`);
 
                 window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
             };
@@ -2017,6 +2028,7 @@
                                                         const name = item.name || item.bgename || item.fullname || item.expertname || item.Name || item.BGE_Name || item['BGE Name'];
                                                         const location = item.location || item.city || item.region || item.Location || item.Region || item.District;
                                                         const code = item.code || item.bgecode || item.expertid || item.Code || item.BGE_Code || item.ID;
+                                                        const email = item.email || item.expertemail || item.bgeemail || item.Email || item['Email Address'] || '';
                                                         const specialisation = item.specialisation || item.specialization || item.skills || item.areaofspecialisation || item.areaofspecialization || item.Specialisation || item.Specialization || '';
 
                                                         return {
@@ -2024,6 +2036,7 @@
                                                             name: name || 'Unnamed BGE',
                                                             location: location || 'Unknown',
                                                             code: code || ('BGE-' + i),
+                                                            email,
                                                             specialisation
                                                         };
                                                     }).filter(b => b.name && b.name !== 'Unnamed BGE');
@@ -2042,6 +2055,7 @@
                                                         const name = item.name || item.bgename || item.fullname || item.expertname || item.Name || item.BGE_Name || item['BGE Name'];
                                                         const location = item.location || item.city || item.region || item.Location || item.Region || item.District;
                                                         const code = item.code || item.bgecode || item.expertid || item.Code || item.BGE_Code || item.ID;
+                                                        const email = item.email || item.expertemail || item.bgeemail || item.Email || item['Email Address'] || '';
                                                         const specialisation = item.specialisation || item.specialization || item.skills || item.areaofspecialisation || item.areaofspecialization || item.Specialisation || item.Specialization || '';
 
                                                         return {
@@ -2049,6 +2063,7 @@
                                                             name: name || 'Unnamed BGE',
                                                             location: location || 'Unknown',
                                                             code: code || ('BGE-' + i),
+                                                            email,
                                                             specialisation
                                                         };
                                                     }).filter(b => b.name && b.name !== 'Unnamed BGE');
