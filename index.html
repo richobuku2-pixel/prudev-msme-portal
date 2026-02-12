@@ -266,11 +266,14 @@
         };
 
         const parseCsvTextToObjects = (text) => {
-            const lines = (text || '').split(/\r?\n/).filter(line => line.trim());
+            if (!text) return [];
+            // Remove Byte Order Mark (BOM) if present
+            const cleanText = text.replace(/^\uFEFF/, '');
+            const lines = cleanText.split(/\r?\n/).filter(line => line.trim());
             if (lines.length < 2) return [];
 
             const rawHeaders = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
-            const normalize = (str) => (str || '').toLowerCase().replace(/[\s_-]/g, '');
+            const normalize = (str) => (str || '').toLowerCase().replace(/[^a-z0-9]/g, '');
 
             return lines.slice(1).map(line => {
                 const values = [];
@@ -280,11 +283,11 @@
                     const char = line[i];
                     if (char === '"') inQuotes = !inQuotes;
                     else if (char === ',' && !inQuotes) {
-                        values.push(cur.trim().replace(/^"|"$/g, ''));
+                        values.push(cur.trim().replace(/^"|"$/g, '').replace(/"{2}/g, '"'));
                         cur = '';
                     } else cur += char;
                 }
-                values.push(cur.trim().replace(/^"|"$/g, ''));
+                values.push(cur.trim().replace(/^"|"$/g, '').replace(/"{2}/g, '"'));
 
                 const obj = {};
                 rawHeaders.forEach((header, i) => {
@@ -2138,11 +2141,11 @@
                                                     const duplicates = [];
 
                                                     data.forEach((item, i) => {
-                                                        const name = item['Business name'] || item['Business Name:'] || item['Name of enterprise'] || item.name || item.businessname || item.msmename || item.companyname || item.Name || item.Business_Name || '';
+                                                        const name = item['Name'] || item['Business name'] || item['Business Name:'] || item['Name of enterprise'] || item.name || item.businessname || item.msmename || item.companyname || item.Name || item.Business_Name || '';
 
                                                         // Common Fields
                                                         const district = item.District || item.district || '';
-                                                        const townCity = item['Town/City'] || item.Town || item.town || item.City || item.city || '';
+                                                        const townCity = item['Town'] || item['Town/City'] || item.Town || item.town || item.City || item.city || '';
                                                         const businessEmail = item['Business Email Address'] || item['Business email address'] || item.businessemail || '';
 
                                                         // Cohort 1 Specifics
@@ -2156,11 +2159,11 @@
                                                         const businessMobile = item['Business Phone Number'] || item['Business Phone Number(s)'] || item['Business Phone Number(s):'] || '';
 
                                                         // Cohort 2 Specifics
-                                                        const location = item['Business physical location'] || item['Business physical location:'] || item.location || '';
-                                                        const contactPerson = item['Name of key contact person'] || item['Name of key contact person:'] || '';
-                                                        const businessRole = item['Business role of the contact person'] || '';
+                                                        const location = item['Physical location'] || item['Business physical location'] || item['Business physical location:'] || item.location || '';
+                                                        const contactPerson = item['Name of contact person'] || item['Name of key contact person'] || item['Name of key contact person:'] || '';
+                                                        const businessRole = item['Role of the contact person'] || item['Business role of the contact person'] || '';
                                                         const contactGender = item['Gender of Key contact person'] || '';
-                                                        const mobile = item['Mobile phone numbers (of contact person)'] || item['Mobile phone numbers (of contact person):'] || '';
+                                                        const mobile = item['Mobile phone numbers'] || item['Mobile phone numbers (of contact person)'] || item['Mobile phone numbers (of contact person):'] || '';
                                                         const contactEmail = item['Email Address of contact person'] || item['Email Address of contact person:'] || '';
                                                         const founderName = item['Name of the main founder'] || '';
                                                         const founderSex = item['Sex of founder'] || '';
@@ -2197,11 +2200,11 @@
                                                     const duplicates = [];
 
                                                     data.forEach((item, i) => {
-                                                        const name = item['Business name'] || item['Business Name:'] || item['Name of enterprise'] || item.name || item.businessname || item.msmename || item.companyname || item.Name || item.Business_Name || '';
+                                                        const name = item['Name'] || item['Business name'] || item['Business Name:'] || item['Name of enterprise'] || item.name || item.businessname || item.msmename || item.companyname || item.Name || item.Business_Name || '';
 
                                                         // Common Fields
                                                         const district = item.District || item.district || '';
-                                                        const townCity = item['Town/City'] || item.Town || item.town || item.City || item.city || '';
+                                                        const townCity = item['Town'] || item['Town/City'] || item.Town || item.town || item.City || item.city || '';
                                                         const businessEmail = item['Business Email Address'] || item['Business email address'] || item.businessemail || '';
 
                                                         // Cohort 1 Specifics
@@ -2215,11 +2218,11 @@
                                                         const businessMobile = item['Business Phone Number'] || item['Business Phone Number(s)'] || item['Business Phone Number(s):'] || '';
 
                                                         // Cohort 2 Specifics
-                                                        const location = item['Business physical location'] || item['Business physical location:'] || item.location || '';
-                                                        const contactPerson = item['Name of key contact person'] || item['Name of key contact person:'] || '';
-                                                        const businessRole = item['Business role of the contact person'] || '';
+                                                        const location = item['Physical location'] || item['Business physical location'] || item['Business physical location:'] || item.location || '';
+                                                        const contactPerson = item['Name of contact person'] || item['Name of key contact person'] || item['Name of key contact person:'] || '';
+                                                        const businessRole = item['Role of the contact person'] || item['Business role of the contact person'] || '';
                                                         const contactGender = item['Gender of Key contact person'] || '';
-                                                        const mobile = item['Mobile phone numbers (of contact person)'] || item['Mobile phone numbers (of contact person):'] || '';
+                                                        const mobile = item['Mobile phone numbers'] || item['Mobile phone numbers (of contact person)'] || item['Mobile phone numbers (of contact person):'] || '';
                                                         const contactEmail = item['Email Address of contact person'] || item['Email Address of contact person:'] || '';
                                                         const founderName = item['Name of the main founder'] || '';
                                                         const founderSex = item['Sex of founder'] || '';
