@@ -1150,16 +1150,18 @@
                     <table className="w-full text-left border-collapse table-fixed">
                         <thead>
                             <tr className="bg-gray-50 text-gray-500 text-[10px] uppercase tracking-widest border-b border-gray-100">
-                                <th className="px-6 py-4 font-bold w-[25%] text-[10px] uppercase tracking-widest">
+                                <th className="px-6 py-4 font-bold w-[20%] text-[10px] uppercase tracking-widest">
                                     <div className="flex items-center space-x-1 group/sort">
                                         <SortButton
-                                            label="BGE Name"
+                                            label="Full Name"
                                             active={bgeSort.key === 'name'}
                                             direction={bgeSort.dir}
                                             onClick={() => handleSort('bge', 'name')}
                                         />
                                     </div>
                                 </th>
+                                <th className="px-6 py-4 font-bold w-[15%] text-[10px] uppercase tracking-widest font-bold">Phone Number</th>
+                                <th className="px-6 py-4 font-bold w-[20%] text-[10px] uppercase tracking-widest font-bold">Email Address</th>
                                 <th className="px-6 py-4 font-bold w-[15%] text-[10px] uppercase tracking-widest">
                                     <div className="flex items-center space-x-1 group/sort">
                                         <SortButton
@@ -1173,15 +1175,14 @@
                                 <th className="px-6 py-4 font-bold w-[10%] text-[10px] uppercase tracking-widest">
                                     <div className="flex items-center space-x-1 group/sort">
                                         <SortButton
-                                            label="Code"
+                                            label="BGE Code"
                                             active={bgeSort.key === 'code'}
                                             direction={bgeSort.dir}
                                             onClick={() => handleSort('bge', 'code')}
                                         />
                                     </div>
                                 </th>
-                                <th className="px-6 py-4 font-bold uppercase tracking-widest w-[25%] text-[10px]">Email Address</th>
-                                <th className="px-6 py-4 font-bold uppercase tracking-widest w-[15%] text-[10px]">Specialisation</th>
+                                <th className="px-6 py-4 font-bold uppercase tracking-widest w-[10%] text-[10px]">Specialisation</th>
                                 <th className="px-6 py-4 font-bold text-right w-[10%] uppercase tracking-widest text-[10px]">Actions</th>
                             </tr>
                         </thead>
@@ -1206,6 +1207,32 @@
                                             {isEditing ? (
                                                 <input
                                                     type="text"
+                                                    value={localEdit.phone}
+                                                    onChange={(e) => setLocalEdit({ ...localEdit, phone: e.target.value })}
+                                                    placeholder="Phone"
+                                                    className="w-full bg-white border border-gizblue-300 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-gizblue-500"
+                                                />
+                                            ) : (
+                                                <div className="text-sm text-gray-600 truncate" title={bge.phone || '-'}>{bge.phone || '-'}</div>
+                                            )}
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            {isEditing ? (
+                                                <input
+                                                    type="email"
+                                                    value={localEdit.email}
+                                                    onChange={(e) => setLocalEdit({ ...localEdit, email: e.target.value })}
+                                                    placeholder="Email"
+                                                    className="w-full bg-white border border-gizblue-300 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-gizblue-500"
+                                                />
+                                            ) : (
+                                                <div className="text-sm text-gray-600 truncate" title={bge.email || '-'}>{bge.email || '-'}</div>
+                                            )}
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            {isEditing ? (
+                                                <input
+                                                    type="text"
                                                     value={localEdit.location}
                                                     onChange={(e) => setLocalEdit({ ...localEdit, location: e.target.value })}
                                                     className="w-full bg-white border border-gizblue-300 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-gizblue-500"
@@ -1224,19 +1251,6 @@
                                                 />
                                             ) : (
                                                 <div className="text-sm font-mono text-gizblue-600">{bge.code}</div>
-                                            )}
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            {isEditing ? (
-                                                <input
-                                                    type="email"
-                                                    value={localEdit.email}
-                                                    onChange={(e) => setLocalEdit({ ...localEdit, email: e.target.value })}
-                                                    placeholder="Email"
-                                                    className="w-full bg-white border border-gizblue-300 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-gizblue-500"
-                                                />
-                                            ) : (
-                                                <div className="text-sm text-gray-600 truncate" title={bge.email || '-'}>{bge.email || '-'}</div>
                                             )}
                                         </td>
                                         <td className="px-6 py-4">
@@ -2037,10 +2051,11 @@
                                         <div className="flex flex-wrap 2xl:flex-nowrap gap-2 w-full sm:w-auto justify-start sm:justify-end">
                                             <CSVExportButton
                                                 data={bges.map(b => ({
-                                                    'Name': b.name,
-                                                    'Code': b.code,
+                                                    'Full Name': b.name,
+                                                    'Phone Number': b.phone || '',
                                                     'Email Address': b.email || '',
                                                     'Location': b.location,
+                                                    'BGE Code': b.code,
                                                     'Specialisation': b.specialisation || ''
                                                 }))}
                                                 filename="bge_network"
@@ -2051,20 +2066,22 @@
                                                 urlStorageKey="prudev_sheet_url_bges"
                                                 onImport={(data) => {
                                                     const imported = data.map((item, i) => {
-                                                        const name = item.name || item.bgename || item.fullname || item.expertname || item.Name || item.BGE_Name || item['BGE Name'];
-                                                        const location = item.location || item.city || item.region || item.Location || item.Region || item.District;
-                                                        const code = item.code || item.bgecode || item.expertid || item.Code || item.BGE_Code || item.ID;
-                                                        const email = item.email || item.expertemail || item.bgeemail || item.Email || item['Email Address'] || '';
-                                                        const specialisation = item.specialisation || item.specialization || item.skills || item.areaofspecialisation || item.areaofspecialization || item.Specialisation || item.Specialization || '';
+                                                        const name = item.fullname || item.full_name || item.expertname || item.Name || item.fullname || item.bgename || item.expert || '';
+                                                         const location = item.location || item.region || item.district || item.Location || item.District || item.Town || '';
+                                                         const code = item.bgecode || item.expertid || item.code || item.Code || item.BGE_Code || item.ID || '';
+                                                         const email = item.emailaddress || item.email || item.expertemail || item.bgeemail || item.Email || item['Email address'] || '';
+                                                         const phone = item.phonenumber || item.phone || item.mobile || item.contact || item.Phone || item['Phone number'] || '';
+                                                         const specialisation = item.specialisation || item.specialization || item.skills || item.areaofspecialisation || '';
 
-                                                        return {
-                                                            id: 'b' + Date.now() + i,
-                                                            name: name || 'Unnamed BGE',
-                                                            location: location || 'Unknown',
-                                                            code: code || ('BGE-' + i),
-                                                            email,
-                                                            specialisation
-                                                        };
+                                                         return {
+                                                             id: 'b' + Date.now() + i,
+                                                             name: name || 'Unnamed BGE',
+                                                             location: location || 'Unknown',
+                                                             code: code || ('BGE-' + i),
+                                                             email,
+                                                             phone,
+                                                             specialisation
+                                                         };
                                                     }).filter(b => b.name && b.name !== 'Unnamed BGE');
 
                                                     if (imported.length > 0) {
@@ -2092,20 +2109,22 @@
                                             <CSVImportButton
                                                 onImport={(data) => {
                                                     const imported = data.map((item, i) => {
-                                                        const name = item.name || item.bgename || item.fullname || item.expertname || item.Name || item.BGE_Name || item['BGE Name'];
-                                                        const location = item.location || item.city || item.region || item.Location || item.Region || item.District;
-                                                        const code = item.code || item.bgecode || item.expertid || item.Code || item.BGE_Code || item.ID;
-                                                        const email = item.email || item.expertemail || item.bgeemail || item.Email || item['Email Address'] || '';
-                                                        const specialisation = item.specialisation || item.specialization || item.skills || item.areaofspecialisation || item.areaofspecialization || item.Specialisation || item.Specialization || '';
+                                                        const name = item.fullname || item.full_name || item.expertname || item.Name || item.fullname || item.bgename || item.expert || '';
+                                                         const location = item.location || item.region || item.district || item.Location || item.District || item.Town || '';
+                                                         const code = item.bgecode || item.expertid || item.code || item.Code || item.BGE_Code || item.ID || '';
+                                                         const email = item.emailaddress || item.email || item.expertemail || item.bgeemail || item.Email || item['Email address'] || '';
+                                                         const phone = item.phonenumber || item.phone || item.mobile || item.contact || item.Phone || item['Phone number'] || '';
+                                                         const specialisation = item.specialisation || item.specialization || item.skills || item.areaofspecialisation || '';
 
-                                                        return {
-                                                            id: 'b' + Date.now() + i,
-                                                            name: name || 'Unnamed BGE',
-                                                            location: location || 'Unknown',
-                                                            code: code || ('BGE-' + i),
-                                                            email,
-                                                            specialisation
-                                                        };
+                                                         return {
+                                                             id: 'b' + Date.now() + i,
+                                                             name: name || 'Unnamed BGE',
+                                                             location: location || 'Unknown',
+                                                             code: code || ('BGE-' + i),
+                                                             email,
+                                                             phone,
+                                                             specialisation
+                                                         };
                                                     }).filter(b => b.name && b.name !== 'Unnamed BGE');
 
                                                     if (imported.length > 0) {
