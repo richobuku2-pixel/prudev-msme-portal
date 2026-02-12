@@ -327,7 +327,7 @@
             return (
                 <button
                     onClick={handleSync}
-                    className="flex items-center space-x-2 bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-2xl text-sm font-bold hover:bg-gray-50 transition-all shadow-sm whitespace-nowrap"
+                    className="flex items-center space-x-2 bg-white border border-gray-200 text-gray-700 px-3 sm:px-4 py-2 rounded-2xl text-sm font-bold hover:bg-gray-50 transition-all shadow-sm whitespace-nowrap"
                     title="Sync data from Google Sheets (CSV export)"
                 >
                     <LinkIcon className="w-4 h-4 text-gizblue-600" />
@@ -366,7 +366,7 @@
                         }
                     }}
                 />
-                <button className="flex items-center space-x-2 bg-gizblue-600 text-white px-4 py-2 rounded-2xl text-sm font-bold hover:bg-gizblue-700 transition-all shadow-lg shadow-gizblue-100 whitespace-nowrap">
+                <button className="flex items-center space-x-2 bg-gizblue-600 text-white px-3 sm:px-4 py-2 rounded-2xl text-sm font-bold hover:bg-gizblue-700 transition-all shadow-lg shadow-gizblue-100 whitespace-nowrap">
                     <Upload className="w-4 h-4" />
                     <span>Import {type} CSV</span>
                 </button>
@@ -408,7 +408,7 @@
             return (
                 <button
                     onClick={handleExport}
-                    className="flex items-center space-x-2 bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-2xl text-sm font-bold hover:bg-gray-50 transition-all shadow-sm whitespace-nowrap"
+                    className="flex items-center space-x-2 bg-white border border-gray-200 text-gray-700 px-3 sm:px-4 py-2 rounded-2xl text-sm font-bold hover:bg-gray-50 transition-all shadow-sm whitespace-nowrap"
                 >
                     <Download className="w-4 h-4 text-gizblue-600" />
                     <span>Export {type} CSV</span>
@@ -1299,7 +1299,7 @@
                                 <tr className="bg-gray-50 text-gray-500 text-[10px] uppercase tracking-widest border-b border-gray-100">
                                     <th className="px-6 py-4 font-bold w-[20%]">
                                         <SortButton
-                                            label={isCohort1 ? "Business Name" : "Name of Enterprise"}
+                                            label="Name of Enterprise"
                                             active={msmeSort.key === 'name'}
                                             direction={msmeSort.dir}
                                             onClick={() => handleSort('msme', 'name')}
@@ -1892,13 +1892,13 @@
             }, [reports, searchQuery]);
 
             return (
-                <div className="flex bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100 min-h-[800px] fade-in">
+                <div className="flex flex-col lg:flex-row bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100 min-h-[800px] fade-in">
                     {/* Sidebar */}
-                    <div className="w-64 bg-gray-50 border-r border-gray-100 p-6 flex flex-col">
-                        <div className="mb-10 px-4">
-                            <h2 className="text-sm font-bold text-gray-400 uppercase tracking-widest">Main Menu</h2>
+                    <div className="w-full lg:w-64 bg-gray-50 border-r border-gray-100 p-4 lg:p-6 flex flex-col shrink-0">
+                        <div className="mb-4 lg:mb-8 flex items-center justify-between lg:block">
+                            <h2 className="text-xl font-black text-gizblue-800 tracking-tighter mb-1 lg:mb-4">PRUDEV II</h2>
                         </div>
-                        <nav className="space-y-2 flex-1">
+                        <nav className="flex lg:flex-col space-x-2 lg:space-x-0 lg:space-y-2 overflow-x-auto lg:overflow-y-auto pb-2 lg:pb-0 pr-2 scrollbar-hide">
                             <SidebarItem id="dashboard" activeTab={activeTab} setActiveTab={setActiveTab} label="Dashboard" icon={Layout} />
                             <SidebarItem id="groups" activeTab={activeTab} setActiveTab={setActiveTab} label="My Teams" icon={Users} />
                             <SidebarItem id="bges" activeTab={activeTab} setActiveTab={setActiveTab} label="BGE Network" icon={UserCheck} />
@@ -2000,7 +2000,7 @@
                                 <div className="space-y-6">
                                     <div className="flex items-center justify-between mb-6">
                                         <p className="text-gray-500 text-sm mb-2 sm:mb-0">Upload BGE list with Name, Location, Code, and optional Specialisation.</p>
-                                        <div className="flex flex-wrap gap-2 w-full sm:w-auto justify-start sm:justify-end">
+                                        <div className="flex flex-wrap 2xl:flex-nowrap gap-2 w-full sm:w-auto justify-start sm:justify-end">
                                             <CSVExportButton
                                                 data={bges.map(({ id, ...rest }) => rest)}
                                                 filename="bge_network"
@@ -2111,7 +2111,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center justify-start gap-2 w-full xl:w-auto">
+                                        <div className="flex flex-col sm:flex-row flex-wrap 2xl:flex-nowrap items-stretch sm:items-center justify-start 2xl:justify-end gap-2 w-full xl:w-auto">
                                             <CSVExportButton
                                                 data={msmes.filter(m => m.cohort === selectedCohort).map(m => ({
                                                     'Business name': m.name,
