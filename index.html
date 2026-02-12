@@ -1032,8 +1032,8 @@
                         <div className="p-8 flex-1 overflow-y-auto">
                             {activeTab === 'overview' && (
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                    <StatCard label="Team Members" value={teamMembers.length} icon={Users} color="blue" />
-                                    <StatCard label="Assigned MSMEs" value={assignedMsmes.length} icon={Building} color="green" />
+                                    <StatCard label="Team Members" value={teamMembers.length} icon={Users} color="green" />
+                                    <StatCard label="Assigned MSMEs" value={assignedMsmes.length} icon={Building} color="blue" />
                                     <StatCard label="Reports Submitted" value={teamReports.length} icon={FileText} color="gizblue" />
                                 </div>
                             )}
@@ -2338,7 +2338,7 @@
                                                                     <td className="px-6 py-6 align-top">
                                                                         <div className="space-y-1">
                                                                             <h5 className="font-bold text-gray-900 text-sm">{bge.name}</h5>
-                                                                            <p className="text-[10px] text-gizblue font-black tracking-widest uppercase">{bge.code}</p>
+                                                                            <p className="text-[10px] text-gizblue-600 font-black tracking-widest uppercase">{bge.code}</p>
                                                                             <p className="text-[10px] text-gray-400 font-medium italic">{bge.specialisation || 'Generalist'}</p>
                                                                             <div className="mt-4 flex flex-col items-start gap-1">
                                                                                 <div className="inline-flex items-center px-2 py-1 bg-gizblue-50 rounded-full">
