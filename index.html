@@ -2042,8 +2042,22 @@
                                                     }).filter(b => b.name && b.name !== 'Unnamed BGE');
 
                                                     if (imported.length > 0) {
-                                                        setBges(prev => [...prev, ...imported]);
-                                                        alert(`Success! Synced ${imported.length} BGEs into the network.`);
+                                                        setBges(prev => {
+                                                            const next = [...prev];
+                                                            imported.forEach(newItem => {
+                                                                const index = next.findIndex(b =>
+                                                                    (newItem.code && b.code === newItem.code) ||
+                                                                    (b.name.toLowerCase() === newItem.name.toLowerCase())
+                                                                );
+                                                                if (index > -1) {
+                                                                    next[index] = { ...next[index], ...newItem, id: next[index].id };
+                                                                } else {
+                                                                    next.push(newItem);
+                                                                }
+                                                            });
+                                                            return next;
+                                                        });
+                                                        alert(`Success! Processed ${imported.length} BGEs. Data updated for matches.`);
                                                     } else {
                                                         alert('No matching data found. Please ensure your sheet has headings like Name, Location, and Code.');
                                                     }
@@ -2069,8 +2083,22 @@
                                                     }).filter(b => b.name && b.name !== 'Unnamed BGE');
 
                                                     if (imported.length > 0) {
-                                                        setBges(prev => [...prev, ...imported]);
-                                                        alert(`Success! Imported ${imported.length} BGEs into the network.`);
+                                                        setBges(prev => {
+                                                            const next = [...prev];
+                                                            imported.forEach(newItem => {
+                                                                const index = next.findIndex(b =>
+                                                                    (newItem.code && b.code === newItem.code) ||
+                                                                    (b.name.toLowerCase() === newItem.name.toLowerCase())
+                                                                );
+                                                                if (index > -1) {
+                                                                    next[index] = { ...next[index], ...newItem, id: next[index].id };
+                                                                } else {
+                                                                    next.push(newItem);
+                                                                }
+                                                            });
+                                                            return next;
+                                                        });
+                                                        alert(`Success! Imported ${imported.length} BGEs. Data updated for matches.`);
                                                     } else {
                                                         alert('No matching data found. Please ensure your CSV has headings like Name, Location, and Code.');
                                                     }
@@ -2153,7 +2181,6 @@
                                                 defaultUrl={selectedCohort === '1' ? QUICK_LINKS.msmeCohort1Sheet : QUICK_LINKS.msmeCohort2Sheet}
                                                 onImport={(data) => {
                                                     const imported = [];
-                                                    const duplicates = [];
 
                                                     data.forEach((item, i) => {
                                                         const name = item['Name'] || item['Business name'] || item['Business Name:'] || item['Name of enterprise'] || item.name || item.businessname || item.msmename || item.companyname || item.Name || item.Business_Name || '';
@@ -2185,13 +2212,6 @@
 
                                                         if (!name) return;
 
-                                                        // Duplicate check
-                                                        if (msmes.some(m => m.name.toLowerCase() === name.toLowerCase()) ||
-                                                            imported.some(m => m.name.toLowerCase() === name.toLowerCase())) {
-                                                            duplicates.push(name);
-                                                            return;
-                                                        }
-
                                                         imported.push({
                                                             id: 'm' + Date.now() + i,
                                                             name, district, townCity, businessEmail,
@@ -2202,17 +2222,29 @@
                                                     });
 
                                                     if (imported.length > 0) {
-                                                        setMsmes(prev => [...prev, ...imported]);
-                                                        alert(`Success! Synced ${imported.length} MSMEs into Cohort ${selectedCohort}. ` + (duplicates.length ? `Skipped ${duplicates.length} duplicates.` : ''));
+                                                        setMsmes(prev => {
+                                                            const next = [...prev];
+                                                            imported.forEach(newItem => {
+                                                                const index = next.findIndex(m =>
+                                                                    m.name.toLowerCase() === newItem.name.toLowerCase()
+                                                                );
+                                                                if (index > -1) {
+                                                                    next[index] = { ...next[index], ...newItem, id: next[index].id };
+                                                                } else {
+                                                                    next.push(newItem);
+                                                                }
+                                                            });
+                                                            return next;
+                                                        });
+                                                        alert(`Success! Processed ${imported.length} MSMEs into Cohort ${selectedCohort}. Data updated for matching names.`);
                                                     } else {
-                                                        alert(duplicates.length > 0 ? 'All records were duplicates.' : 'No matching data found. Please check your sheet headers.');
+                                                        alert('No matching data found. Please check your sheet headers.');
                                                     }
                                                 }}
                                             />
                                             <CSVImportButton
                                                 onImport={(data) => {
                                                     const imported = [];
-                                                    const duplicates = [];
 
                                                     data.forEach((item, i) => {
                                                         const name = item['Name'] || item['Business name'] || item['Business Name:'] || item['Name of enterprise'] || item.name || item.businessname || item.msmename || item.companyname || item.Name || item.Business_Name || '';
@@ -2244,13 +2276,6 @@
 
                                                         if (!name) return;
 
-                                                        // Duplicate check
-                                                        if (msmes.some(m => m.name.toLowerCase() === name.toLowerCase()) ||
-                                                            imported.some(m => m.name.toLowerCase() === name.toLowerCase())) {
-                                                            duplicates.push(name);
-                                                            return;
-                                                        }
-
                                                         imported.push({
                                                             id: 'm' + Date.now() + i,
                                                             name, district, townCity, businessEmail,
@@ -2261,10 +2286,23 @@
                                                     });
 
                                                     if (imported.length > 0) {
-                                                        setMsmes(prev => [...prev, ...imported]);
-                                                        alert(`Success! Imported ${imported.length} MSMEs into Cohort ${selectedCohort}. ` + (duplicates.length ? `Skipped ${duplicates.length} duplicates.` : ''));
+                                                        setMsmes(prev => {
+                                                            const next = [...prev];
+                                                            imported.forEach(newItem => {
+                                                                const index = next.findIndex(m =>
+                                                                    m.name.toLowerCase() === newItem.name.toLowerCase()
+                                                                );
+                                                                if (index > -1) {
+                                                                    next[index] = { ...next[index], ...newItem, id: next[index].id };
+                                                                } else {
+                                                                    next.push(newItem);
+                                                                }
+                                                            });
+                                                            return next;
+                                                        });
+                                                        alert(`Success! Imported ${imported.length} MSMEs into Cohort ${selectedCohort}. Data updated for matching names.`);
                                                     } else {
-                                                        alert(duplicates.length > 0 ? 'All records were duplicates.' : 'No matching data found. Please check your CSV headers.');
+                                                        alert('No matching data found. Please check your CSV headers.');
                                                     }
                                                 }}
                                                 type={`Cohort ${selectedCohort}`}
