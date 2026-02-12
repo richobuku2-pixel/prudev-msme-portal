@@ -1150,32 +1150,39 @@
                     <table className="w-full text-left border-collapse table-fixed">
                         <thead>
                             <tr className="bg-gray-50 text-gray-500 text-[10px] uppercase tracking-widest border-b border-gray-100">
-                                <th className="px-6 py-4 font-bold w-[35%]">
-                                    <SortButton
-                                        label="BGE Name"
-                                        active={bgeSort.key === 'name'}
-                                        direction={bgeSort.dir}
-                                        onClick={() => handleSort('bge', 'name')}
-                                    />
+                                <th className="px-6 py-4 font-bold w-[25%] text-[10px] uppercase tracking-widest">
+                                    <div className="flex items-center space-x-1 group/sort">
+                                        <SortButton
+                                            label="BGE Name"
+                                            active={bgeSort.key === 'name'}
+                                            direction={bgeSort.dir}
+                                            onClick={() => handleSort('bge', 'name')}
+                                        />
+                                    </div>
                                 </th>
-                                <th className="px-6 py-4 font-bold w-[20%]">
-                                    <SortButton
-                                        label="Location"
-                                        active={bgeSort.key === 'location'}
-                                        direction={bgeSort.dir}
-                                        onClick={() => handleSort('bge', 'location')}
-                                    />
+                                <th className="px-6 py-4 font-bold w-[15%] text-[10px] uppercase tracking-widest">
+                                    <div className="flex items-center space-x-1 group/sort">
+                                        <SortButton
+                                            label="Location"
+                                            active={bgeSort.key === 'location'}
+                                            direction={bgeSort.dir}
+                                            onClick={() => handleSort('bge', 'location')}
+                                        />
+                                    </div>
                                 </th>
-                                <th className="px-6 py-4 font-bold w-[15%]">
-                                    <SortButton
-                                        label="Code"
-                                        active={bgeSort.key === 'code'}
-                                        direction={bgeSort.dir}
-                                        onClick={() => handleSort('bge', 'code')}
-                                    />
+                                <th className="px-6 py-4 font-bold w-[10%] text-[10px] uppercase tracking-widest">
+                                    <div className="flex items-center space-x-1 group/sort">
+                                        <SortButton
+                                            label="Code"
+                                            active={bgeSort.key === 'code'}
+                                            direction={bgeSort.dir}
+                                            onClick={() => handleSort('bge', 'code')}
+                                        />
+                                    </div>
                                 </th>
-                                <th className="px-6 py-4 font-bold uppercase tracking-widest w-[20%]">Specialisation</th>
-                                <th className="px-6 py-4 font-bold text-right w-[10%] uppercase tracking-widest">Actions</th>
+                                <th className="px-6 py-4 font-bold uppercase tracking-widest w-[25%] text-[10px]">Email Address</th>
+                                <th className="px-6 py-4 font-bold uppercase tracking-widest w-[15%] text-[10px]">Specialisation</th>
+                                <th className="px-6 py-4 font-bold text-right w-[10%] uppercase tracking-widest text-[10px]">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50">
@@ -1217,6 +1224,19 @@
                                                 />
                                             ) : (
                                                 <div className="text-sm font-mono text-gizblue-600">{bge.code}</div>
+                                            )}
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            {isEditing ? (
+                                                <input
+                                                    type="email"
+                                                    value={localEdit.email}
+                                                    onChange={(e) => setLocalEdit({ ...localEdit, email: e.target.value })}
+                                                    placeholder="Email"
+                                                    className="w-full bg-white border border-gizblue-300 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-gizblue-500"
+                                                />
+                                            ) : (
+                                                <div className="text-sm text-gray-600 truncate" title={bge.email || '-'}>{bge.email || '-'}</div>
                                             )}
                                         </td>
                                         <td className="px-6 py-4">
@@ -2016,7 +2036,13 @@
                                         <p className="text-gray-500 text-sm mb-2 sm:mb-0">Upload BGE list with Name, Location, Code, and optional Specialisation.</p>
                                         <div className="flex flex-wrap 2xl:flex-nowrap gap-2 w-full sm:w-auto justify-start sm:justify-end">
                                             <CSVExportButton
-                                                data={bges.map(({ id, ...rest }) => rest)}
+                                                data={bges.map(b => ({
+                                                    'Name': b.name,
+                                                    'Code': b.code,
+                                                    'Email Address': b.email || '',
+                                                    'Location': b.location,
+                                                    'Specialisation': b.specialisation || ''
+                                                }))}
                                                 filename="bge_network"
                                                 type="BGE"
                                             />
